@@ -3,43 +3,47 @@
 @tailwind utilities;
 
 /* =========================================================================
-   VORA GAMING OS — WARM PORCELAIN (LIGHT) & MIDNIGHT VELVET (DARK)
+   VORA GAMING OS — NEO-TOKYO VAPOR DESIGN SYSTEM
+   - Cyber Aqua: #00F5D4
+   - Electric Magenta / Hot Pink: #FF007F
+   - Neon Violet: #7928CA
+   - Light Canvas: Soft Cool Platinum (#F1F5F9)
+   - Gaming Canvas: Deep Obsidian Navy (#080A12)
    ========================================================================= */
 
 :root {
-  --bg-canvas: #F6F5F0;
+  --bg-canvas: #F3F6FA;
   --bg-surface: #FFFFFF;
-  --bg-surface-soft: #FBFBF8;
-  --bg-desk: rgba(255, 255, 255, 0.90);
-  --bg-pill: #EFECE6;
-  --bg-pill-hover: #E5E1D8;
+  --bg-surface-soft: #F8FAFC;
+  --bg-desk: rgba(255, 255, 255, 0.92);
+  --bg-pill: #E2E8F0;
+  --bg-pill-hover: #CBD5E1;
   --border-hairline: rgba(15, 23, 42, 0.08);
-  --border-strong: rgba(15, 23, 42, 0.15);
+  --border-strong: rgba(15, 23, 42, 0.16);
 
-  --ink-primary: #111318;
-  --ink-secondary: #475569;
+  --ink-primary: #0F172A;
+  --ink-secondary: #334155;
   --ink-muted: #64748B;
 
-  --indigo: #5B4BFF;
-  --indigo-hover: #4A3AE8;
-  --indigo-soft: rgba(91, 75, 255, 0.10);
-  --indigo-glow: rgba(91, 75, 255, 0.22);
+  /* Primary Accent: Hot Pink / Vivid Magenta */
+  --primary: #FF007F;
+  --primary-hover: #E0006F;
+  --primary-soft: rgba(255, 0, 127, 0.09);
+  --primary-glow: rgba(255, 0, 127, 0.25);
 
-  --coral: #FF5C35;
-  --coral-hover: #E64B26;
-  --coral-soft: rgba(255, 92, 53, 0.11);
-  --coral-glow: rgba(255, 92, 53, 0.22);
+  /* Secondary Accent: Cyber Aqua */
+  --secondary: #00F5D4;
+  --secondary-hover: #00D6BA;
+  --secondary-soft: rgba(0, 245, 212, 0.12);
+  --secondary-glow: rgba(0, 245, 212, 0.28);
 
-  --emerald: #10B981;
-  --emerald-soft: rgba(16, 185, 129, 0.12);
-  --emerald-glow: rgba(16, 185, 129, 0.24);
+  --accent-violet: #7928CA;
+  --accent-emerald: #05FFA1;
+  --accent-amber: #FFBE0B;
 
-  --amber: #F59E0B;
-  --amber-soft: rgba(245, 158, 11, 0.13);
-
-  --shadow-card: 0 2px 10px -2px rgba(17, 19, 24, 0.04), 0 1px 2px rgba(17, 19, 24, 0.03);
-  --shadow-hover: 0 14px 32px -10px rgba(17, 19, 24, 0.10), 0 2px 6px -2px rgba(17, 19, 24, 0.04);
-  --shadow-rail: 0 10px 30px -8px rgba(17, 19, 24, 0.08);
+  --shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03);
+  --shadow-hover: 0 16px 36px -8px rgba(255, 0, 127, 0.12), 0 4px 12px -2px rgba(0, 245, 212, 0.08);
+  --shadow-rail: 0 10px 30px -6px rgba(15, 23, 42, 0.08);
 
   --radius-xl: 24px;
   --radius-lg: 18px;
@@ -51,39 +55,36 @@
 }
 
 html.gaming-mode {
-  --bg-canvas: #090810;
-  --bg-surface: #131022;
-  --bg-surface-soft: #1a162e;
-  --bg-desk: rgba(19, 16, 34, 0.92);
-  --bg-pill: #1f1a38;
-  --bg-pill-hover: #292349;
-  --border-hairline: rgba(138, 63, 240, 0.22);
-  --border-strong: rgba(255, 106, 61, 0.35);
+  --bg-canvas: #070913;
+  --bg-surface: #0E1222;
+  --bg-surface-soft: #141A30;
+  --bg-desk: rgba(14, 18, 34, 0.94);
+  --bg-pill: #1B223C;
+  --bg-pill-hover: #242E50;
+  --border-hairline: rgba(0, 245, 212, 0.16);
+  --border-strong: rgba(255, 0, 127, 0.35);
 
   --ink-primary: #FFFFFF;
-  --ink-secondary: #CBD5E1;
+  --ink-secondary: #E2E8F0;
   --ink-muted: #94A3B8;
 
-  --indigo: #7366FF;
-  --indigo-hover: #5B4BFF;
-  --indigo-soft: rgba(115, 102, 255, 0.18);
-  --indigo-glow: rgba(115, 102, 255, 0.35);
+  --primary: #FF007F;
+  --primary-hover: #FF2E93;
+  --primary-soft: rgba(255, 0, 127, 0.18);
+  --primary-glow: rgba(255, 0, 127, 0.38);
 
-  --coral: #FF6A3D;
-  --coral-hover: #FF5C35;
-  --coral-soft: rgba(255, 106, 61, 0.18);
-  --coral-glow: rgba(255, 106, 61, 0.35);
+  --secondary: #00F5D4;
+  --secondary-hover: #33FFDF;
+  --secondary-soft: rgba(0, 245, 212, 0.18);
+  --secondary-glow: rgba(0, 245, 212, 0.40);
 
-  --emerald: #10B981;
-  --emerald-soft: rgba(16, 185, 129, 0.18);
-  --emerald-glow: rgba(16, 185, 129, 0.35);
+  --accent-violet: #9D4EDD;
+  --accent-emerald: #05FFA1;
+  --accent-amber: #FFD166;
 
-  --amber: #FBBF24;
-  --amber-soft: rgba(251, 191, 36, 0.18);
-
-  --shadow-card: 0 6px 22px -4px rgba(0, 0, 0, 0.75);
-  --shadow-hover: 0 18px 40px -12px rgba(255, 106, 61, 0.25);
-  --shadow-rail: 0 12px 32px -8px rgba(0, 0, 0, 0.85);
+  --shadow-card: 0 8px 32px -4px rgba(0, 0, 0, 0.8), 0 0 15px -2px rgba(0, 245, 212, 0.1);
+  --shadow-hover: 0 18px 45px -8px rgba(255, 0, 127, 0.32), 0 0 25px rgba(0, 245, 212, 0.25);
+  --shadow-rail: 0 12px 36px -6px rgba(0, 0, 0, 0.9);
 
   color-scheme: dark;
 }
@@ -91,8 +92,8 @@ html.gaming-mode {
 body {
   background-color: var(--bg-canvas);
   background-image:
-    radial-gradient(ellipse 65% 40% at 22% -5%, var(--indigo-soft), transparent 65%),
-    radial-gradient(ellipse 50% 35% at 88% -8%, var(--coral-soft), transparent 60%);
+    radial-gradient(ellipse 65% 45% at 15% -5%, var(--primary-soft), transparent 65%),
+    radial-gradient(ellipse 60% 40% at 90% -5%, var(--secondary-soft), transparent 60%);
   background-attachment: fixed;
   color: var(--ink-primary);
   min-height: 100vh;
@@ -113,7 +114,7 @@ body {
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--indigo);
+  background: var(--primary);
 }
 
 /* Base Card Surfaces */
@@ -175,8 +176,8 @@ html.gaming-mode a[class*="border-slate-200"] {
 html.gaming-mode [role="dialog"],
 html.gaming-mode div[class*="max-h-"][class*="bg-white"] {
   background: var(--bg-surface) !important;
-  border: 1px solid var(--border-hairline) !important;
-  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.9) !important;
+  border: 1px solid var(--border-strong) !important;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.95), 0 0 40px rgba(255, 0, 127, 0.25) !important;
   color: var(--ink-primary) !important;
 }
 
@@ -191,8 +192,8 @@ html.gaming-mode textarea {
 html.gaming-mode input:focus,
 html.gaming-mode select:focus,
 html.gaming-mode textarea:focus {
-  border-color: var(--coral) !important;
-  box-shadow: 0 0 0 2px var(--coral-soft) !important;
+  border-color: var(--secondary) !important;
+  box-shadow: 0 0 0 2px var(--secondary-soft) !important;
 }
 
 /* Tables */
@@ -203,7 +204,7 @@ html.gaming-mode table {
 html.gaming-mode th {
   background-color: var(--bg-surface-soft) !important;
   border-color: var(--border-hairline) !important;
-  color: var(--coral) !important;
+  color: var(--secondary) !important;
 }
 
 html.gaming-mode td {
@@ -211,7 +212,7 @@ html.gaming-mode td {
 }
 
 html.gaming-mode tr:hover td {
-  background-color: var(--indigo-soft) !important;
+  background-color: var(--primary-soft) !important;
 }
 
 .tnum {

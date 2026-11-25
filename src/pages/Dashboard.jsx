@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { 
-  IndianRupee, Activity, Timer, TrendingUp, Gamepad2, Car, Users, 
-  Hourglass, MonitorPlay, Zap, ArrowRight, Play, CheckCircle2, Coffee 
+  IndianRupee, Activity, Timer, Gamepad2, Car, 
+  Hourglass, ArrowRight, Coffee 
 } from 'lucide-react'
 import { useData, useNow } from '../context/DataContext'
 import { useFlows } from '../components/Flows'
 import { startOfDay } from '../lib/dates'
-import { inr, fmtClock, fmtTime, sessionCode, playersLabel, categoryName } from '../lib/format'
+import { inr, fmtClock, fmtTime, playersLabel } from '../lib/format'
 import { runningBill } from '../lib/billing'
 import { Spinner } from '../components/ui'
 
@@ -47,7 +47,7 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col gap-6">
       {/* 1. SCULPTED "LOUNGE PULSE" HERO CARD */}
-      <section className="surface-card p-6 sm:p-7 relative overflow-hidden bg-gradient-to-br from-[var(--indigo-soft)] via-[var(--bg-surface)] to-[var(--emerald-soft)]">
+      <section className="surface-card p-6 sm:p-7 relative overflow-hidden bg-gradient-to-br from-[var(--primary-soft)] via-[var(--bg-surface)] to-[var(--secondary-soft)]">
         <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-6 items-center">
           {/* Left Side: Revenue & Live KPIs */}
           <div className="flex flex-col gap-4">
@@ -55,8 +55,8 @@ export default function Dashboard() {
               <span className="text-[11px] font-extrabold uppercase tracking-widest text-[var(--ink-muted)]">
                 TODAY'S OPERATIONS REVENUE
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[var(--emerald-soft)] text-[var(--emerald)] text-[10px] font-black">
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--emerald)] animate-pulse" />
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[var(--secondary-soft)] text-[var(--secondary)] text-[10px] font-black">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--secondary)] animate-pulse" />
                 LIVE TICKING
               </span>
             </div>
@@ -73,17 +73,17 @@ export default function Dashboard() {
             {/* Micro Pills Row */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--bg-surface)] border border-[var(--border-hairline)] text-xs text-[var(--ink-secondary)]">
-                <Activity className="w-3.5 h-3.5 text-[var(--indigo)]" />
+                <Activity className="w-3.5 h-3.5 text-[var(--primary)]" />
                 <span>Active:</span>
                 <strong className="text-[var(--ink-primary)] font-mono">{active.length}</strong>
               </div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--bg-surface)] border border-[var(--border-hairline)] text-xs text-[var(--ink-secondary)]">
-                <Timer className="w-3.5 h-3.5 text-[var(--coral)]" />
+                <Timer className="w-3.5 h-3.5 text-[var(--secondary)]" />
                 <span>Playtime:</span>
                 <strong className="text-[var(--ink-primary)] font-mono">{(minutes / 60).toFixed(1)}h</strong>
               </div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--bg-surface)] border border-[var(--border-hairline)] text-xs text-[var(--ink-secondary)]">
-                <Gamepad2 className="w-3.5 h-3.5 text-purple-500" />
+                <Gamepad2 className="w-3.5 h-3.5 text-[var(--accent-violet)]" />
                 <span>Total Matches:</span>
                 <strong className="text-[var(--ink-primary)] font-mono">{startedToday}</strong>
               </div>
@@ -104,11 +104,11 @@ export default function Dashboard() {
                     strokeWidth="11"
                     strokeLinecap="round"
                   />
-                  {/* Progress Fill */}
+                  {/* Progress Fill in Neo-Tokyo Aqua */}
                   <path
                     d="M 14 75 A 56 56 0 0 1 126 75"
                     fill="none"
-                    stroke="var(--indigo)"
+                    stroke="var(--secondary)"
                     strokeWidth="11"
                     strokeDasharray={arcCircumference}
                     strokeDashoffset={arcOffset}
@@ -140,12 +140,12 @@ export default function Dashboard() {
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-[11px] font-mono font-bold transition-transform hover:-translate-y-0.5 ${
                         isOccupied
                           ? isSim 
-                            ? 'bg-[var(--coral-soft)] border-[var(--coral)] text-[var(--coral)]'
-                            : 'bg-[var(--indigo-soft)] border-[var(--indigo)] text-[var(--indigo)]'
+                            ? 'bg-[var(--secondary-soft)] border-[var(--secondary)] text-[var(--secondary)]'
+                            : 'bg-[var(--primary-soft)] border-[var(--primary)] text-[var(--primary)]'
                           : 'bg-[var(--bg-surface)] border-[var(--border-hairline)] text-[var(--ink-secondary)]'
                       }`}
                     >
-                      <span className={`w-1.5 h-1.5 rounded-full ${isOccupied ? (isSim ? 'bg-[var(--coral)]' : 'bg-[var(--indigo)]') : 'bg-slate-300'}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${isOccupied ? (isSim ? 'bg-[var(--secondary)]' : 'bg-[var(--primary)]') : 'bg-slate-300'}`} />
                       <span>{st.name}</span>
                     </div>
                   )
@@ -156,17 +156,17 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* 2. UNPAID CHECKOUT QUEUE (IF ANY) */}
+      {/* 2. UNPAID CHECKOUT QUEUE */}
       {pending.length > 0 && (
-        <section className="surface-card p-4 sm:p-5 border-amber-300/60 bg-gradient-to-r from-amber-500/10 via-[var(--bg-surface)] to-amber-500/5">
+        <section className="surface-card p-4 sm:p-5 border-[var(--accent-amber)]/40 bg-gradient-to-r from-[var(--accent-amber)]/10 via-[var(--bg-surface)] to-[var(--accent-amber)]/5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Hourglass className="w-4 h-4 text-amber-500 animate-spin" />
+              <Hourglass className="w-4 h-4 text-[var(--accent-amber)] animate-spin" />
               <h3 className="font-display text-sm font-bold text-[var(--ink-primary)]">
                 Checkout Awaiting Settlement ({pending.length})
               </h3>
             </div>
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-600 bg-amber-500/10 px-2.5 py-1 rounded-full">
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--accent-amber)] bg-[var(--accent-amber)]/10 px-2.5 py-1 rounded-full">
               Action Required
             </span>
           </div>
@@ -180,7 +180,7 @@ export default function Dashboard() {
                 </div>
                 <button
                   onClick={() => openCheckout(s)}
-                  className="px-3 py-1.5 rounded-xl bg-[var(--emerald)] text-white text-xs font-bold hover:brightness-110 shadow-sm"
+                  className="px-3 py-1.5 rounded-xl bg-[var(--secondary)] text-[#070913] text-xs font-black hover:brightness-110 shadow-sm"
                 >
                   {inr(s.final_amount)} · Pay
                 </button>
@@ -216,7 +216,7 @@ export default function Dashboard() {
             <button
               onClick={() => setFilter('ps5')}
               className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
-                filter === 'ps5' ? 'bg-[var(--bg-surface)] text-[var(--indigo)] shadow-sm' : 'text-[var(--ink-muted)] hover:text-[var(--ink-primary)]'
+                filter === 'ps5' ? 'bg-[var(--bg-surface)] text-[var(--primary)] shadow-sm' : 'text-[var(--ink-muted)] hover:text-[var(--ink-primary)]'
               }`}
             >
               PlayStation 5
@@ -224,7 +224,7 @@ export default function Dashboard() {
             <button
               onClick={() => setFilter('rig')}
               className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
-                filter === 'rig' ? 'bg-[var(--bg-surface)] text-[var(--coral)] shadow-sm' : 'text-[var(--ink-muted)] hover:text-[var(--ink-primary)]'
+                filter === 'rig' ? 'bg-[var(--bg-surface)] text-[var(--secondary)] shadow-sm' : 'text-[var(--ink-muted)] hover:text-[var(--ink-primary)]'
               }`}
             >
               Racing Rigs
@@ -248,8 +248,8 @@ export default function Dashboard() {
                 className={`surface-card p-5 flex flex-col justify-between gap-4 transition-all duration-200 hover:-translate-y-1 ${
                   isOccupied
                     ? isSim 
-                      ? 'border-[var(--coral)] bg-gradient-to-br from-[var(--coral-soft)] via-[var(--bg-surface)] to-[var(--bg-surface)] shadow-lg shadow-[var(--coral-glow)]'
-                      : 'border-[var(--indigo)] bg-gradient-to-br from-[var(--indigo-soft)] via-[var(--bg-surface)] to-[var(--bg-surface)] shadow-lg shadow-[var(--indigo-glow)]'
+                      ? 'border-[var(--secondary)] bg-gradient-to-br from-[var(--secondary-soft)] via-[var(--bg-surface)] to-[var(--bg-surface)] shadow-lg shadow-[var(--secondary-glow)]'
+                      : 'border-[var(--primary)] bg-gradient-to-br from-[var(--primary-soft)] via-[var(--bg-surface)] to-[var(--bg-surface)] shadow-lg shadow-[var(--primary-glow)]'
                     : ''
                 }`}
               >
@@ -257,7 +257,7 @@ export default function Dashboard() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className={`w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 ${
-                      isSim ? 'bg-[var(--coral-soft)] text-[var(--coral)]' : 'bg-[var(--indigo-soft)] text-[var(--indigo)]'
+                      isSim ? 'bg-[var(--secondary-soft)] text-[var(--secondary)]' : 'bg-[var(--primary-soft)] text-[var(--primary)]'
                     }`}>
                       <Icon className="w-5 h-5" />
                     </div>
@@ -273,8 +273,8 @@ export default function Dashboard() {
 
                   <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide ${
                     isOccupied 
-                      ? 'bg-[var(--emerald)] text-white' 
-                      : 'bg-[var(--emerald-soft)] text-[var(--emerald)]'
+                      ? isSim ? 'bg-[var(--secondary)] text-[#070913]' : 'bg-[var(--primary)] text-white' 
+                      : 'bg-[var(--secondary-soft)] text-[var(--secondary)]'
                   }`}>
                     {isOccupied && <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />}
                     {isOccupied ? 'IN PLAY' : 'READY'}
@@ -298,7 +298,7 @@ export default function Dashboard() {
                         <span className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--ink-muted)] block">
                           RUNNING FARE
                         </span>
-                        <p className="font-display text-lg font-black text-[var(--emerald)] tnum">
+                        <p className="font-display text-lg font-black text-[var(--secondary)] tnum">
                           {inr(bill?.total || 0)}
                         </p>
                       </div>
@@ -315,13 +315,13 @@ export default function Dashboard() {
                         onClick={() => openSnacks(currentSession)}
                         className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[var(--bg-pill)] hover:bg-[var(--bg-pill-hover)] text-[var(--ink-primary)] text-xs font-bold transition-all"
                       >
-                        <Coffee className="w-3.5 h-3.5 text-[var(--indigo)]" />
+                        <Coffee className="w-3.5 h-3.5 text-[var(--primary)]" />
                         <span>Snacks</span>
                       </button>
                       <button
                         onClick={() => openCheckout(currentSession)}
                         className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-white text-xs font-bold transition-all shadow-sm ${
-                          isSim ? 'bg-[var(--coral)] hover:bg-[var(--coral-hover)]' : 'bg-[var(--indigo)] hover:bg-[var(--indigo-hover)]'
+                          isSim ? 'bg-[var(--secondary)] text-[#070913] hover:brightness-110' : 'bg-[var(--primary)] hover:bg-[var(--primary-hover)]'
                         }`}
                       >
                         <span>End & Bill</span>
@@ -332,7 +332,7 @@ export default function Dashboard() {
                   /* Empty Station Quick Launch Bar */
                   <button
                     onClick={() => openCheckIn(st)}
-                    className="w-full py-3 px-4 rounded-2xl bg-[var(--bg-pill)] hover:bg-[var(--indigo)] text-[var(--ink-primary)] hover:text-white flex items-center justify-between text-xs font-bold transition-all group"
+                    className="w-full py-3 px-4 rounded-2xl bg-[var(--bg-pill)] hover:bg-[var(--primary)] text-[var(--ink-primary)] hover:text-white flex items-center justify-between text-xs font-bold transition-all group"
                   >
                     <span>Quick Check-In Station</span>
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
