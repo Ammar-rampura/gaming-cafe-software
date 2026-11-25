@@ -33,7 +33,7 @@ export default function SplashScreen({ onFinish }) {
         >
           <div className="relative h-28 w-28 sm:h-36 sm:w-36 overflow-hidden rounded-3xl bg-black/60 p-1.5 shadow-[0_0_50px_rgba(124,58,237,0.4)] ring-1 ring-white/10">
             <img
-              src="/voro-logo.jpg"
+              src="/logo.png"
               alt="VORA Logo"
               className="h-full w-full rounded-2xl object-cover"
             />

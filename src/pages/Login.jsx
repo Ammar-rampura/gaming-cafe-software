@@ -39,7 +39,7 @@ export default function Login() {
 
         <div className="mb-6 flex items-center gap-3.5">
           <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-black p-1 shadow-lg shadow-brand-600/30 ring-1 ring-slate-200">
-            <img src="/voro-logo.jpg" alt="VORA" className="h-full w-full rounded-xl object-cover" />
+            <img src="/logo.png" alt="VORA" className="h-full w-full rounded-xl object-cover" />
           </div>
           <div>
             <h1 className="font-display text-2xl font-black tracking-tight text-slate-900">VORA</h1>

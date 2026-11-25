@@ -70,7 +70,7 @@ export default function Layout({ children }) {
           <img src={settings.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover ring-2 ring-brand-500/20" />
         ) : (
           <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-black p-0.5 shadow-md shadow-brand-600/30 ring-1 ring-white/10">
-            <img src="/voro-logo.jpg" alt="VORA" className="h-full w-full rounded-lg object-cover" />
+            <img src="/logo.png" alt="VORA" className="h-full w-full rounded-lg object-cover" />
             <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
@@ -154,7 +154,7 @@ export default function Layout({ children }) {
             </button>
             <div className="flex items-center gap-2 min-w-0">
               <div className="h-7 w-7 shrink-0 overflow-hidden rounded-lg bg-black p-0.5 lg:hidden">
-                <img src="/voro-logo.jpg" alt="VORA" className="h-full w-full rounded-md object-cover" />
+                <img src="/logo.png" alt="VORA" className="h-full w-full rounded-md object-cover" />
               </div>
               <p className="truncate font-display text-sm font-black text-slate-900 lg:hidden">{name}</p>
             </div>
