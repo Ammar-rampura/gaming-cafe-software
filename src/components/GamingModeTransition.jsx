@@ -34,11 +34,13 @@ export default function GamingModeTransition({ active, mode = 'enter', onSwitch,
     let finished = false;
     const TOUT = 1.75;
 
-    // Enter mode: Orange -> Purple -> Cyan
-    // Exit mode (reverse): Cyan -> Purple -> Warm Amber/Gold
-    const CO = mode === 'enter' ? [255, 106, 61] : [25, 230, 255];
-    const CP = [138, 63, 240];
-    const CC = mode === 'enter' ? [25, 230, 255] : [255, 170, 50];
+    // Custom Swatch RGBs:
+    // Crimson: [217, 24, 75]
+    // Wine/Burgundy: [115, 20, 45]
+    // Charcoal: [60, 60, 60]
+    const CO = mode === 'enter' ? [217, 24, 75] : [60, 60, 60];
+    const CP = [115, 20, 45];
+    const CC = mode === 'enter' ? [60, 60, 60] : [217, 24, 75];
 
     function mix(a, b, t) {
       return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
@@ -148,7 +150,7 @@ export default function GamingModeTransition({ active, mode = 'enter', onSwitch,
       L.forEach((e) => {
         const h = e[0];
         const s = e[1];
-        c.strokeStyle = 'rgba(' + h.c + ',' + (0.16 + e[2] * 0.35) + ')';
+        c.strokeStyle = 'rgba(' + h.c + ',' + (0.18 + e[2] * 0.35) + ')';
         c.lineWidth = 7;
         hexPath(h.x, h.y, R * s * 0.95, (1 - s) * 1.05);
         c.stroke();
@@ -163,19 +165,19 @@ export default function GamingModeTransition({ active, mode = 'enter', onSwitch,
         hexPath(h.x, h.y, R * s * 0.95, (1 - s) * 1.05);
         P += hexStr(h.x, h.y, R * s * 0.95, (1 - s) * 1.05);
         
-        // Deep glass frosted tile fill
+        // Deep obsidian crimson frosted glass fill
         c.fillStyle =
           'rgba(' +
-          Math.round(10 + (h.c[0] - 10) * lit * 0.5) +
+          Math.round(25 + (h.c[0] - 25) * lit * 0.5) +
           ',' +
-          Math.round(10 + (h.c[1] - 10) * lit * 0.5) +
+          Math.round(20 + (h.c[1] - 20) * lit * 0.5) +
           ',' +
-          Math.round(20 + (h.c[2] - 20) * lit * 0.5) +
+          Math.round(24 + (h.c[2] - 24) * lit * 0.5) +
           ',' +
-          (0.38 + lit * 0.42) +
+          (0.40 + lit * 0.40) +
           ')';
         c.fill();
-        c.strokeStyle = 'rgba(' + h.c + ',' + (0.6 + lit * 0.4) + ')';
+        c.strokeStyle = 'rgba(' + h.c + ',' + (0.65 + lit * 0.35) + ')';
         c.lineWidth = 1.5;
         c.stroke();
       });

@@ -3,47 +3,44 @@
 @tailwind utilities;
 
 /* =========================================================================
-   VORA GAMING OS — NEO-TOKYO VAPOR DESIGN SYSTEM
-   - Cyber Aqua: #00F5D4
-   - Electric Magenta / Hot Pink: #FF007F
-   - Neon Violet: #7928CA
-   - Light Canvas: Soft Cool Platinum (#F1F5F9)
-   - Gaming Canvas: Deep Obsidian Navy (#080A12)
+   VORA GAMING OS — CRIMSON OBSIDIAN LUXURY PALETTE
+   Extracted directly from user's custom swatch:
+   - Primary Crimson: #D9184B (RGB: 217, 24, 75)
+   - Deep Wine / Burgundy: #73142D (RGB: 115, 20, 45)
+   - Slate Charcoal: #3C3C3C (RGB: 60, 60, 60)
+   - Deep Onyx Obsidian: #1E1E1E / #282828 (RGB: 40, 40, 40)
+   - Crisp Pure White: #FFFFFF
    ========================================================================= */
 
 :root {
-  --bg-canvas: #F3F6FA;
+  --bg-canvas: #F8F9FA;
   --bg-surface: #FFFFFF;
-  --bg-surface-soft: #F8FAFC;
-  --bg-desk: rgba(255, 255, 255, 0.92);
-  --bg-pill: #E2E8F0;
-  --bg-pill-hover: #CBD5E1;
-  --border-hairline: rgba(15, 23, 42, 0.08);
-  --border-strong: rgba(15, 23, 42, 0.16);
+  --bg-surface-soft: #F1F3F5;
+  --bg-desk: rgba(255, 255, 255, 0.94);
+  --bg-pill: #E9ECEF;
+  --bg-pill-hover: #DEE2E6;
+  --border-hairline: rgba(60, 60, 60, 0.10);
+  --border-strong: rgba(60, 60, 60, 0.22);
 
-  --ink-primary: #0F172A;
-  --ink-secondary: #334155;
-  --ink-muted: #64748B;
+  --ink-primary: #1E1E1E;
+  --ink-secondary: #3C3C3C;
+  --ink-muted: #6C757D;
 
-  /* Primary Accent: Hot Pink / Vivid Magenta */
-  --primary: #FF007F;
-  --primary-hover: #E0006F;
-  --primary-soft: rgba(255, 0, 127, 0.09);
-  --primary-glow: rgba(255, 0, 127, 0.25);
+  /* Primary Crimson & Burgundy */
+  --crimson: #D9184B;
+  --crimson-hover: #BF133F;
+  --crimson-soft: rgba(217, 24, 75, 0.10);
+  --crimson-glow: rgba(217, 24, 75, 0.26);
 
-  /* Secondary Accent: Cyber Aqua */
-  --secondary: #00F5D4;
-  --secondary-hover: #00D6BA;
-  --secondary-soft: rgba(0, 245, 212, 0.12);
-  --secondary-glow: rgba(0, 245, 212, 0.28);
+  --wine: #73142D;
+  --wine-soft: rgba(115, 20, 45, 0.12);
 
-  --accent-violet: #7928CA;
-  --accent-emerald: #05FFA1;
-  --accent-amber: #FFBE0B;
+  --emerald: #10B981;
+  --emerald-soft: rgba(16, 185, 129, 0.12);
 
-  --shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03);
-  --shadow-hover: 0 16px 36px -8px rgba(255, 0, 127, 0.12), 0 4px 12px -2px rgba(0, 245, 212, 0.08);
-  --shadow-rail: 0 10px 30px -6px rgba(15, 23, 42, 0.08);
+  --shadow-card: 0 4px 18px -2px rgba(40, 40, 40, 0.05), 0 1px 3px rgba(40, 40, 40, 0.03);
+  --shadow-hover: 0 16px 36px -8px rgba(217, 24, 75, 0.16), 0 4px 12px -2px rgba(40, 40, 40, 0.06);
+  --shadow-rail: 0 10px 30px -6px rgba(40, 40, 40, 0.08);
 
   --radius-xl: 24px;
   --radius-lg: 18px;
@@ -55,36 +52,33 @@
 }
 
 html.gaming-mode {
-  --bg-canvas: #070913;
-  --bg-surface: #0E1222;
-  --bg-surface-soft: #141A30;
-  --bg-desk: rgba(14, 18, 34, 0.94);
-  --bg-pill: #1B223C;
-  --bg-pill-hover: #242E50;
-  --border-hairline: rgba(0, 245, 212, 0.16);
-  --border-strong: rgba(255, 0, 127, 0.35);
+  --bg-canvas: #121214;
+  --bg-surface: #1E1E22;
+  --bg-surface-soft: #28282D;
+  --bg-desk: rgba(30, 30, 34, 0.94);
+  --bg-pill: #2C2C33;
+  --bg-pill-hover: #383842;
+  --border-hairline: rgba(217, 24, 75, 0.22);
+  --border-strong: rgba(217, 24, 75, 0.45);
 
   --ink-primary: #FFFFFF;
-  --ink-secondary: #E2E8F0;
-  --ink-muted: #94A3B8;
+  --ink-secondary: #E9ECEF;
+  --ink-muted: #ADB5BD;
 
-  --primary: #FF007F;
-  --primary-hover: #FF2E93;
-  --primary-soft: rgba(255, 0, 127, 0.18);
-  --primary-glow: rgba(255, 0, 127, 0.38);
+  --crimson: #D9184B;
+  --crimson-hover: #FF2B63;
+  --crimson-soft: rgba(217, 24, 75, 0.20);
+  --crimson-glow: rgba(217, 24, 75, 0.42);
 
-  --secondary: #00F5D4;
-  --secondary-hover: #33FFDF;
-  --secondary-soft: rgba(0, 245, 212, 0.18);
-  --secondary-glow: rgba(0, 245, 212, 0.40);
+  --wine: #73142D;
+  --wine-soft: rgba(115, 20, 45, 0.25);
 
-  --accent-violet: #9D4EDD;
-  --accent-emerald: #05FFA1;
-  --accent-amber: #FFD166;
+  --emerald: #10B981;
+  --emerald-soft: rgba(16, 185, 129, 0.20);
 
-  --shadow-card: 0 8px 32px -4px rgba(0, 0, 0, 0.8), 0 0 15px -2px rgba(0, 245, 212, 0.1);
-  --shadow-hover: 0 18px 45px -8px rgba(255, 0, 127, 0.32), 0 0 25px rgba(0, 245, 212, 0.25);
-  --shadow-rail: 0 12px 36px -6px rgba(0, 0, 0, 0.9);
+  --shadow-card: 0 8px 30px -4px rgba(0, 0, 0, 0.85), 0 0 15px -2px rgba(217, 24, 75, 0.15);
+  --shadow-hover: 0 18px 45px -8px rgba(217, 24, 75, 0.35), 0 0 25px rgba(217, 24, 75, 0.25);
+  --shadow-rail: 0 12px 36px -6px rgba(0, 0, 0, 0.95);
 
   color-scheme: dark;
 }
@@ -92,8 +86,8 @@ html.gaming-mode {
 body {
   background-color: var(--bg-canvas);
   background-image:
-    radial-gradient(ellipse 65% 45% at 15% -5%, var(--primary-soft), transparent 65%),
-    radial-gradient(ellipse 60% 40% at 90% -5%, var(--secondary-soft), transparent 60%);
+    radial-gradient(ellipse 65% 45% at 20% -5%, var(--crimson-soft), transparent 65%),
+    radial-gradient(ellipse 60% 40% at 85% -5%, var(--wine-soft), transparent 60%);
   background-attachment: fixed;
   color: var(--ink-primary);
   min-height: 100vh;
@@ -106,15 +100,18 @@ body {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--border-strong);
   border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  background: var(--crimson);
 }
 
 /* Base Card Surfaces */
@@ -155,12 +152,12 @@ html.gaming-mode h3 {
 
 html.gaming-mode .text-slate-700,
 html.gaming-mode .text-slate-600 {
-  color: #CBD5E1 !important;
+  color: #E9ECEF !important;
 }
 
 html.gaming-mode .text-slate-500,
 html.gaming-mode .text-slate-400 {
-  color: #94A3B8 !important;
+  color: #ADB5BD !important;
 }
 
 /* Outline buttons & action triggers */
@@ -177,7 +174,7 @@ html.gaming-mode [role="dialog"],
 html.gaming-mode div[class*="max-h-"][class*="bg-white"] {
   background: var(--bg-surface) !important;
   border: 1px solid var(--border-strong) !important;
-  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.95), 0 0 40px rgba(255, 0, 127, 0.25) !important;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.95), 0 0 40px rgba(217, 24, 75, 0.25) !important;
   color: var(--ink-primary) !important;
 }
 
@@ -192,19 +189,19 @@ html.gaming-mode textarea {
 html.gaming-mode input:focus,
 html.gaming-mode select:focus,
 html.gaming-mode textarea:focus {
-  border-color: var(--secondary) !important;
-  box-shadow: 0 0 0 2px var(--secondary-soft) !important;
+  border-color: var(--crimson) !important;
+  box-shadow: 0 0 0 2px var(--crimson-soft) !important;
 }
 
 /* Tables */
 html.gaming-mode table {
-  color: #E2E8F0 !important;
+  color: #E9ECEF !important;
 }
 
 html.gaming-mode th {
   background-color: var(--bg-surface-soft) !important;
   border-color: var(--border-hairline) !important;
-  color: var(--secondary) !important;
+  color: var(--crimson) !important;
 }
 
 html.gaming-mode td {
@@ -212,7 +209,7 @@ html.gaming-mode td {
 }
 
 html.gaming-mode tr:hover td {
-  background-color: var(--primary-soft) !important;
+  background-color: var(--crimson-soft) !important;
 }
 
 .tnum {
@@ -220,10 +217,30 @@ html.gaming-mode tr:hover td {
   font-feature-settings: "tnum";
 }
 
-#receipt-print { display: none; }
+#receipt-print {
+  display: none;
+}
+
 @media print {
-  #root { display: none !important; }
-  #receipt-print { display: block !important; width: 80mm; margin: 0; padding: 3mm; background: #fff; color: #000; }
-  @page { size: 80mm auto; margin: 0; }
-  body { background: #fff; }
+  #root {
+    display: none !important;
+  }
+
+  #receipt-print {
+    display: block !important;
+    width: 80mm;
+    margin: 0;
+    padding: 3mm;
+    background: #fff;
+    color: #000;
+  }
+
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+
+  body {
+    background: #fff;
+  }
 }

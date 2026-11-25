@@ -33,8 +33,8 @@ export default function Layout({ children }) {
       {/* 1. Zone 1: Floating Icon Rail (Desktop) */}
       <aside className="hidden lg:flex sticky top-5 h-[calc(100vh-40px)] w-[76px] flex-col items-center justify-between rounded-[26px] bg-[var(--bg-surface)] border border-[var(--border-hairline)] shadow-[var(--shadow-rail)] p-3.5 z-40 transition-all duration-300">
         <div className="flex flex-col items-center gap-6 w-full">
-          {/* Logo Brand Icon with Neo-Tokyo Glow */}
-          <NavLink to="/" className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] p-1.5 flex items-center justify-center shadow-lg shadow-[var(--primary-glow)] transition-transform hover:scale-105">
+          {/* Logo Brand Icon with Crimson Obsidian Glow */}
+          <NavLink to="/" className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--crimson)] to-[var(--wine)] p-1.5 flex items-center justify-center shadow-lg shadow-[var(--crimson-glow)] transition-transform hover:scale-105">
             <img src={VORA_LOGO} alt="VORA" className="w-full h-full object-contain rounded-xl" />
           </NavLink>
 
@@ -48,7 +48,7 @@ export default function Layout({ children }) {
                 className={({ isActive }) => cx(
                   'group relative w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200',
                   isActive 
-                    ? 'bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-white shadow-lg shadow-[var(--primary-glow)]' 
+                    ? 'bg-gradient-to-br from-[var(--crimson)] to-[var(--wine)] text-white shadow-lg shadow-[var(--crimson-glow)]' 
                     : 'text-[var(--ink-muted)] hover:bg-[var(--bg-pill)] hover:text-[var(--ink-primary)]'
                 )}
               >
@@ -60,7 +60,7 @@ export default function Layout({ children }) {
                       {label}
                     </span>
                     {to === '/' && active?.length > 0 && (
-                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--secondary)] text-[#070913] text-[9px] font-black shadow-sm">
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--crimson)] text-white text-[9px] font-black shadow-sm">
                         {active.length}
                       </span>
                     )}
@@ -78,13 +78,13 @@ export default function Layout({ children }) {
             title={isGaming ? 'Switch to Light Mode' : 'Switch to Gaming Mode'}
             className="w-11 h-11 rounded-full flex items-center justify-center bg-[var(--bg-pill)] text-[var(--ink-primary)] hover:bg-[var(--bg-pill-hover)] transition-transform hover:scale-105"
           >
-            {isGaming ? <Flame className="w-5 h-5 text-[var(--primary)] animate-pulse" /> : <Sun className="w-5 h-5 text-amber-500" />}
+            {isGaming ? <Flame className="w-5 h-5 text-[var(--crimson)] animate-pulse" /> : <Sun className="w-5 h-5 text-amber-500" />}
           </button>
 
           <button
             onClick={signOut}
             title="Sign out"
-            className="w-11 h-11 rounded-full flex items-center justify-center bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] text-white font-black text-xs shadow-md hover:scale-105 transition-transform"
+            className="w-11 h-11 rounded-full flex items-center justify-center bg-gradient-to-br from-[var(--crimson)] to-[var(--wine)] text-white font-black text-xs shadow-md hover:scale-105 transition-transform"
           >
             {profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : 'A'}
           </button>
@@ -104,7 +104,7 @@ export default function Layout({ children }) {
                 <img src={VORA_LOGO} alt="VORA" className="w-9 h-9 rounded-xl object-contain bg-slate-900 p-1" />
                 <div>
                   <h3 className="font-display font-bold text-sm text-[var(--ink-primary)]">{name}</h3>
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--secondary)]">V.O.R.A. GAMING OS</span>
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--crimson)]">V.O.R.A. GAMING OS</span>
                 </div>
               </div>
               <button onClick={() => setOpen(false)} className="p-1 rounded-xl text-[var(--ink-muted)] hover:bg-[var(--bg-pill)]">
@@ -121,7 +121,7 @@ export default function Layout({ children }) {
                   onClick={() => setOpen(false)}
                   className={({ isActive }) => cx(
                     'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all',
-                    isActive ? 'bg-[var(--primary)] text-white shadow-md' : 'text-[var(--ink-muted)] hover:bg-[var(--bg-pill)]'
+                    isActive ? 'bg-[var(--crimson)] text-white shadow-md' : 'text-[var(--ink-muted)] hover:bg-[var(--bg-pill)]'
                   )}
                 >
                   <Icon className="w-4 h-4" />
@@ -155,7 +155,7 @@ export default function Layout({ children }) {
                   OPERATIONS DESK
                 </span>
                 <span className="text-slate-400">/</span>
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--secondary)]">
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--crimson)]">
                   LIVE TELEMETRY
                 </span>
               </div>
@@ -166,10 +166,10 @@ export default function Layout({ children }) {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--secondary-soft)] text-[var(--secondary)] text-xs font-extrabold tracking-wide">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--crimson-soft)] text-[var(--crimson)] text-xs font-extrabold tracking-wide">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--secondary)] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--secondary)]"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--crimson)] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--crimson)]"></span>
               </span>
               <span>LIVE SYSTEM</span>
             </div>
@@ -180,8 +180,8 @@ export default function Layout({ children }) {
             >
               {isGaming ? (
                 <>
-                  <Flame className="w-4 h-4 text-[var(--primary)] animate-pulse" />
-                  <span className="font-extrabold text-[var(--primary)]">GAMING MODE</span>
+                  <Flame className="w-4 h-4 text-[var(--crimson)] animate-pulse" />
+                  <span className="font-extrabold text-[var(--crimson)]">GAMING MODE</span>
                 </>
               ) : (
                 <>
@@ -193,7 +193,7 @@ export default function Layout({ children }) {
 
             <button
               onClick={() => openCheckIn()}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--primary)] to-[var(--primary-hover)] text-white text-xs sm:text-sm font-bold shadow-lg shadow-[var(--primary-glow)] transition-all active:scale-95 hover:brightness-110"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--crimson)] to-[var(--wine)] text-white text-xs sm:text-sm font-bold shadow-lg shadow-[var(--crimson-glow)] transition-all active:scale-95 hover:brightness-110"
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
               <span>Start Session</span>
