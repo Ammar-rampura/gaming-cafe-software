@@ -422,7 +422,7 @@ function StaffTab() {
       <div className="overflow-x-auto"><table className="w-full min-w-[560px] text-left text-sm"><thead className="bg-slate-50 text-xs font-semibold text-slate-500"><tr><Th>Name</Th><Th>Login</Th><Th>Role</Th><Th>Status</Th></tr></thead>
         <tbody className="divide-y divide-slate-100">{users.map((u) => (
           <tr key={u.id}><td className="px-4 py-3 font-medium">{u.full_name || '—'}{u.id === profile.id && <span className="ml-2 text-xs text-slate-400">(you)</span>}</td>
-            <td className="px-4 py-3 text-slate-500">{(u.email || '').replace('@powerplay.local', '')}</td>
+            <td className="px-4 py-3 text-slate-500">{(u.email || '').replace('@vora.local', '').replace('@powerplay.local', '')}</td>
             <td className="px-4 py-3"><Select className="w-32" value={u.role} disabled={u.id === profile.id} onChange={(e) => patch(u, { role: e.target.value })}><option value="staff">Staff</option><option value="admin">Admin</option></Select></td>
             <td className="px-4 py-3"><Button size="sm" variant={u.active ? 'soft' : 'danger'} disabled={u.id === profile.id} onClick={() => patch(u, { active: !u.active })}>{u.active ? 'Active' : 'Disabled — enable'}</Button></td></tr>))}</tbody></table></div>
       {add && <Modal title="Add staff account" onClose={() => setAdd(null)} footer={<Button className="w-full" loading={busy} onClick={create}>Create account</Button>}>

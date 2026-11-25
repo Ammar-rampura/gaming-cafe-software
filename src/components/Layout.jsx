@@ -23,7 +23,7 @@ export default function Layout({ children }) {
   const { settings, online, error, active } = useData()
   const { openCheckIn } = useFlows()
   const [open, setOpen] = useState(false)
-  const name = settings?.cafe_name || 'POWER PLAY'
+  const name = settings?.cafe_name || 'VORA'
 
   const navLinks = (
     <nav className="flex flex-1 flex-col gap-1 px-3 py-3 overflow-y-auto">
@@ -69,8 +69,8 @@ export default function Layout({ children }) {
         {settings?.logo_url ? (
           <img src={settings.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover ring-2 ring-brand-500/20" />
         ) : (
-          <div className="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-tr from-brand-700 via-brand-600 to-indigo-500 text-white shadow-md shadow-brand-600/30">
-            <Zap className="h-5 w-5 fill-current text-white" />
+          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-black p-0.5 shadow-md shadow-brand-600/30 ring-1 ring-white/10">
+            <img src="/voro-logo.jpg" alt="VORA" className="h-full w-full rounded-lg object-cover" />
             <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
@@ -79,7 +79,9 @@ export default function Layout({ children }) {
         )}
         <div className="min-w-0">
           <p className="truncate font-display text-sm font-black tracking-tight text-slate-900">{name}</p>
-          <p className="text-[10px] font-bold tracking-wide text-brand-600">GAMING LOUNGE OS</p>
+          <p className="text-[10px] font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-purple-600">
+            V.O.R.A. GAMING OS
+          </p>
         </div>
       </div>
     </div>
@@ -151,8 +153,8 @@ export default function Layout({ children }) {
               <Menu className="h-5 w-5" />
             </button>
             <div className="flex items-center gap-2 min-w-0">
-              <div className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-brand-600 text-white lg:hidden">
-                <Zap className="h-4 w-4 fill-current" />
+              <div className="h-7 w-7 shrink-0 overflow-hidden rounded-lg bg-black p-0.5 lg:hidden">
+                <img src="/voro-logo.jpg" alt="VORA" className="h-full w-full rounded-md object-cover" />
               </div>
               <p className="truncate font-display text-sm font-black text-slate-900 lg:hidden">{name}</p>
             </div>

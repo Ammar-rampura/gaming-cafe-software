@@ -55,10 +55,10 @@ export default function History() {
     <>
       <PageHeader title="Session Archives" sub={`${shown.length} sessions logged · ${inr(total)} recorded`}>
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Button variant="outline" size="sm" disabled={!flat.length} onClick={() => exportCSV(flat, 'power-play-sessions')} className="flex-1 sm:flex-initial">
+          <Button variant="outline" size="sm" disabled={!flat.length} onClick={() => exportCSV(flat, 'vora-sessions')} className="flex-1 sm:flex-initial">
             <Download className="h-3.5 w-3.5" />CSV
           </Button>
-          <Button variant="outline" size="sm" disabled={!flat.length} onClick={() => exportXLSX({ Sessions: flat }, 'power-play-sessions')} className="flex-1 sm:flex-initial">
+          <Button variant="outline" size="sm" disabled={!flat.length} onClick={() => exportXLSX({ Sessions: flat }, 'vora-sessions')} className="flex-1 sm:flex-initial">
             <FileSpreadsheet className="h-3.5 w-3.5" />Excel
           </Button>
         </div>

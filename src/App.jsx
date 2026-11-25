@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import { DataProvider } from './context/DataContext'
 import { FlowProvider } from './components/Flows'
 import Layout from './components/Layout'
 import { Spinner } from './components/ui'
+import SplashScreen from './components/SplashScreen'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Stations from './pages/Stations'
@@ -13,7 +15,18 @@ import Reports from './pages/Reports'
 import Settings from './pages/Settings'
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem('vora_splash_shown'))
   const { session, profile, loading, isAdmin, signOut } = useAuth()
+
+  const handleSplashFinish = () => {
+    sessionStorage.setItem('vora_splash_shown', 'true')
+    setShowSplash(false)
+  }
+
+  if (showSplash) {
+    return <SplashScreen onFinish={handleSplashFinish} />
+  }
+
   if (loading) return <Spinner />
   if (!session) return <Login />
   if (!profile?.active) {

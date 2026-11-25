@@ -21,7 +21,7 @@ const defaultSeed = {
   users: [
     {
       id: '00000000-0000-0000-0000-000000000001',
-      email: 'admin@powerplay.local',
+      email: 'admin@vora.local',
       password: 'password123',
       full_name: 'Admin',
       role: 'admin',
@@ -31,12 +31,12 @@ const defaultSeed = {
   ],
   settings: {
     id: 1,
-    cafe_name: 'POWER PLAY GAMING CAFE',
+    cafe_name: 'VORA GAMING LOUNGE',
     logo_url: null,
     address: 'Main Gaming Lounge',
     phone: '+91 9876543210',
     receipt_footer: 'Thank you for playing! See you again.',
-    receipt_prefix: 'PP-',
+    receipt_prefix: 'VOR-',
     show_logo_on_receipt: false,
     billing_method: 'per_minute',
     next_receipt_no: 1

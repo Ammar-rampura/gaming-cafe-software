@@ -38,19 +38,19 @@ export default function Login() {
         <div className="absolute left-0 top-0 h-1.5 w-full rounded-t-2xl bg-gradient-to-r from-brand-600 via-indigo-600 to-cyan-500" />
 
         <div className="mb-6 flex items-center gap-3.5">
-          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-brand-600 to-indigo-700 text-white shadow-lg shadow-brand-600/30">
-            <Zap className="h-6 w-6 fill-current text-white" />
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-black p-1 shadow-lg shadow-brand-600/30 ring-1 ring-slate-200">
+            <img src="/voro-logo.jpg" alt="VORA" className="h-full w-full rounded-xl object-cover" />
           </div>
           <div>
-            <h1 className="font-display text-2xl font-black tracking-tight text-slate-900">POWER PLAY</h1>
-            <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">
-              {first ? 'System Initial Setup' : 'Gaming Cafe OS'}
+            <h1 className="font-display text-2xl font-black tracking-tight text-slate-900">VORA</h1>
+            <p className="text-[10px] font-extrabold uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-purple-600">
+              Virtual Operations &amp; Recreation Organizer
             </p>
           </div>
         </div>
 
         <p className="mb-6 text-xs text-slate-500 font-medium">
-          {first ? 'Create the master administrator profile to initialize the lounge system.' : 'Sign in to access station telemetry and billing controls.'}
+          {first ? 'Create the master administrator profile to initialize VORA.' : 'Sign in to access station telemetry, snacks POS, and billing controls.'}
         </p>
 
         <form onSubmit={submit} className="space-y-4">

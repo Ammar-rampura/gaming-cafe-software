@@ -64,8 +64,8 @@ export default function Reports() {
   return (
     <>
       <PageHeader title="Revenue & Reports" sub="Based on completed, paid sessions.">
-        <Button variant="outline" disabled={!inRange.length} onClick={() => exportCSV(sessionsSheet, 'power-play-report')}><Download className="h-4 w-4" />CSV</Button>
-        <Button variant="outline" disabled={!inRange.length} onClick={() => exportXLSX({ Summary: summary, Daily: dailySheet, Sessions: sessionsSheet }, 'power-play-report')}><FileSpreadsheet className="h-4 w-4" />Excel</Button>
+        <Button variant="outline" disabled={!inRange.length} onClick={() => exportCSV(sessionsSheet, 'vora-report')}><Download className="h-4 w-4" />CSV</Button>
+        <Button variant="outline" disabled={!inRange.length} onClick={() => exportXLSX({ Summary: summary, Daily: dailySheet, Sessions: sessionsSheet }, 'vora-report')}><FileSpreadsheet className="h-4 w-4" />Excel</Button>
       </PageHeader>
 
       <div className="grid gap-3 sm:grid-cols-3">

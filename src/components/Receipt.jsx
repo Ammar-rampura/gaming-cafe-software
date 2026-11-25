@@ -22,7 +22,7 @@ export function ReceiptBody({ s, settings }) {
     <div style={{ width: '72mm', fontFamily: '"Courier New", monospace', fontSize: 12, color: '#000', lineHeight: 1.35 }}>
       <div style={{ textAlign: 'center' }}>
         {st.show_logo_on_receipt && st.logo_url && <img src={st.logo_url} alt="" style={{ maxHeight: 48, margin: '0 auto 4px' }} />}
-        <div style={{ fontWeight: 700, fontSize: 15 }}>{st.cafe_name || 'POWER PLAY GAMING CAFE'}</div>
+        <div style={{ fontWeight: 700, fontSize: 15 }}>{st.cafe_name || 'VORA GAMING LOUNGE'}</div>
         {st.address && <div style={{ whiteSpace: 'pre-line' }}>{st.address}</div>}
         {st.phone && <div>Ph: {st.phone}</div>}
       </div>
@@ -64,7 +64,7 @@ export function ReceiptBody({ s, settings }) {
 
 export function generateWhatsAppReceiptText(s, settings) {
   const st = settings || {}
-  const cafeName = st.cafe_name || 'POWER PLAY GAMING CAFE'
+  const cafeName = st.cafe_name || 'VORA GAMING LOUNGE'
   const snacksList = s.snacks || []
   const snacksTotal = s.snacks_amount || snacksList.reduce((sum, item) => sum + (Number(item.price) * (Number(item.qty) || 1)), 0)
 

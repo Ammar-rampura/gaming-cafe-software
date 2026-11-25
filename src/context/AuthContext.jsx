@@ -5,7 +5,7 @@ const Ctx = createContext(null)
 export const useAuth = () => useContext(Ctx)
 
 // Staff without an email can log in with a simple username.
-export const toEmail = (u) => (u.includes('@') ? u.trim() : `${u.trim().toLowerCase().replace(/\s+/g, '')}@powerplay.local`)
+export const toEmail = (u) => (u.includes('@') ? u.trim() : `${u.trim().toLowerCase().replace(/\s+/g, '')}@vora.local`)
 
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
