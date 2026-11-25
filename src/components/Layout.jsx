@@ -91,14 +91,14 @@ export default function Layout({ children }) {
   )
 
   const user = (
-    <div className="m-3 rounded-2xl border border-slate-200/70 bg-gradient-to-b from-white to-slate-50/80 p-3 shadow-sm">
+    <div className="voro-user-box m-3 rounded-2xl border border-slate-200/70 bg-gradient-to-b from-white to-slate-50/80 p-3 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
-            <p className="truncate text-xs font-bold text-slate-800">{profile?.full_name || 'Staff'}</p>
-            {isAdmin && <Shield className="h-3 w-3 text-brand-600 shrink-0" />}
+            <p className="user-name truncate text-xs font-bold text-slate-800">{profile?.full_name || 'Staff'}</p>
+            {isAdmin && <Shield className="h-3 w-3 text-[#ff6a3d] shrink-0" />}
           </div>
-          <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">{profile?.role}</span>
+          <span className="user-role inline-block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">{profile?.role}</span>
         </div>
         <button 
           onClick={signOut} 
