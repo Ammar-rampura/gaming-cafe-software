@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import { DataProvider } from './context/DataContext'
+import { ThemeProvider } from './context/ThemeContext'
 import { FlowProvider } from './components/Flows'
 import Layout from './components/Layout'
 import { Spinner } from './components/ui'
@@ -38,20 +39,22 @@ export default function App() {
     )
   }
   return (
-    <DataProvider>
-      <FlowProvider>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/stations" element={<Stations />} />
-            <Route path="/simulators" element={<Simulators />} />
-            <Route path="/history" element={<History />} />
-            <Route path="/reports" element={isAdmin ? <Reports /> : <Navigate to="/" />} />
-            <Route path="/settings" element={isAdmin ? <Settings /> : <Navigate to="/" />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </Layout>
-      </FlowProvider>
-    </DataProvider>
+    <ThemeProvider>
+      <DataProvider>
+        <FlowProvider>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/stations" element={<Stations />} />
+              <Route path="/simulators" element={<Simulators />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/reports" element={isAdmin ? <Reports /> : <Navigate to="/" />} />
+              <Route path="/settings" element={isAdmin ? <Settings /> : <Navigate to="/" />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </Layout>
+        </FlowProvider>
+      </DataProvider>
+    </ThemeProvider>
   )
 }

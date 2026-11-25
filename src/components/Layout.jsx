@@ -2,10 +2,11 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { 
   LayoutDashboard, Gamepad2, Car, History, BarChart3, Settings, 
-  LogOut, Menu, X, WifiOff, Plus, Zap, Shield, ChevronRight 
+  LogOut, Menu, X, WifiOff, Plus, Zap, Shield, ChevronRight, Sun, Flame 
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
+import { useTheme } from '../context/ThemeContext'
 import { useFlows } from './Flows'
 import { Button, cx } from './ui'
 import { VORA_LOGO } from '../lib/logoData'
@@ -22,6 +23,7 @@ const NAV = [
 export default function Layout({ children }) {
   const { profile, isAdmin, signOut } = useAuth()
   const { settings, online, error, active } = useData()
+  const { isGaming, toggleTheme } = useTheme()
   const { openCheckIn } = useFlows()
   const [open, setOpen] = useState(false)
   const name = settings?.cafe_name || 'VORA'
@@ -162,6 +164,32 @@ export default function Layout({ children }) {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Light Mode vs Gaming Mode Toggle */}
+            <button
+              onClick={toggleTheme}
+              title={isGaming ? 'Switch to Light Mode' : 'Switch to Gaming Mode'}
+              className={cx(
+                'relative flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-bold transition-all duration-300 border shadow-sm cursor-pointer select-none',
+                isGaming 
+                  ? 'bg-gradient-to-r from-orange-500/20 via-pink-500/20 to-purple-600/30 border-orange-500/50 text-orange-400 hover:border-orange-400 shadow-[0_0_15px_rgba(255,106,61,0.25)]' 
+                  : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
+              )}
+            >
+              {isGaming ? (
+                <>
+                  <Flame className="h-4 w-4 text-[#ff6a3d] animate-pulse" />
+                  <span className="hidden sm:inline font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#ff6a3d] via-[#ff8c66] to-[#b0457a]">GAMING MODE</span>
+                  <span className="sm:hidden font-extrabold text-[#ff6a3d]">GAME</span>
+                </>
+              ) : (
+                <>
+                  <Sun className="h-4 w-4 text-amber-500" />
+                  <span className="hidden sm:inline font-bold text-slate-700">LIGHT MODE</span>
+                  <span className="sm:hidden font-bold text-slate-700">LIGHT</span>
+                </>
+              )}
+            </button>
+
             <div className="hidden sm:flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50/70 px-3 py-1 text-xs font-bold text-emerald-700">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>LIVE SYSTEM</span>
