@@ -15,11 +15,10 @@ import Reports from './pages/Reports'
 import Settings from './pages/Settings'
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem('vora_splash_shown'))
+  const [showSplash, setShowSplash] = useState(true)
   const { session, profile, loading, isAdmin, signOut } = useAuth()
 
   const handleSplashFinish = () => {
-    sessionStorage.setItem('vora_splash_shown', 'true')
     setShowSplash(false)
   }
 

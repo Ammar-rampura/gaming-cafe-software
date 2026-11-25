@@ -3,6 +3,7 @@ import { Play, Zap, Shield, Sparkles } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { Button, Field, Input, Card } from '../components/ui'
+import { VORA_LOGO } from '../lib/logoData'
 
 export default function Login() {
   const { signIn, signUp } = useAuth()
@@ -39,7 +40,7 @@ export default function Login() {
 
         <div className="mb-6 flex items-center gap-3.5">
           <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-slate-900 p-1 shadow-lg shadow-brand-600/30 ring-1 ring-slate-200">
-            <img src="/logo.png?v=2" alt="VORA" className="h-full w-full rounded-xl object-contain" />
+            <img src={VORA_LOGO} alt="VORA" className="h-full w-full rounded-xl object-contain" />
           </div>
           <div>
             <h1 className="font-display text-2xl font-black tracking-tight text-slate-900">VORA</h1>
