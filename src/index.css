@@ -2,318 +2,221 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { 
-  color-scheme: light; 
-  --voro-orange: #ff6a3d;
-  --voro-purple: #6a22b8;
-  --voro-magenta: #b0457a;
-  --voro-deep: #07060c;
-}
+/* =========================================================================
+   VORA GAMING OS — WARM PORCELAIN (LIGHT) & MIDNIGHT VELVET (DARK)
+   ========================================================================= */
 
-body { 
-  @apply bg-[#f8fafc] text-slate-900 font-sans antialiased transition-colors duration-200; 
-  /* Subtle high-tech dot-matrix grid with soft atmospheric glows */
-  background-image: 
-    radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.22) 1px, transparent 0),
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 45%),
-    radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 40%),
-    radial-gradient(at 50% 100%, rgba(241, 245, 249, 0.9) 0px, transparent 100%);
-  background-size: 24px 24px, 100% 100%, 100% 100%, 100% 100%;
-  background-attachment: fixed;
-}
+:root {
+  --bg-canvas: #F6F5F0;
+  --bg-surface: #FFFFFF;
+  --bg-surface-soft: #FBFBF8;
+  --bg-desk: rgba(255, 255, 255, 0.90);
+  --bg-pill: #EFECE6;
+  --bg-pill-hover: #E5E1D8;
+  --border-hairline: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.15);
 
-/* ========================================================= */
-/* VORO GAMING MODE - Full Cyber Lounge Immersion Theme      */
-/* Colors directly drawn from VORO logo:                     */
-/* Dark base: #07060c / #0d0b17                              */
-/* Accents: Neon Orange #ff6a3d, Violet #6a22b8, Pink #b0457a */
-/* ========================================================= */
+  --ink-primary: #111318;
+  --ink-secondary: #475569;
+  --ink-muted: #64748B;
+
+  --indigo: #5B4BFF;
+  --indigo-hover: #4A3AE8;
+  --indigo-soft: rgba(91, 75, 255, 0.10);
+  --indigo-glow: rgba(91, 75, 255, 0.22);
+
+  --coral: #FF5C35;
+  --coral-hover: #E64B26;
+  --coral-soft: rgba(255, 92, 53, 0.11);
+  --coral-glow: rgba(255, 92, 53, 0.22);
+
+  --emerald: #10B981;
+  --emerald-soft: rgba(16, 185, 129, 0.12);
+  --emerald-glow: rgba(16, 185, 129, 0.24);
+
+  --amber: #F59E0B;
+  --amber-soft: rgba(245, 158, 11, 0.13);
+
+  --shadow-card: 0 2px 10px -2px rgba(17, 19, 24, 0.04), 0 1px 2px rgba(17, 19, 24, 0.03);
+  --shadow-hover: 0 14px 32px -10px rgba(17, 19, 24, 0.10), 0 2px 6px -2px rgba(17, 19, 24, 0.04);
+  --shadow-rail: 0 10px 30px -8px rgba(17, 19, 24, 0.08);
+
+  --radius-xl: 24px;
+  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 9999px;
+
+  color-scheme: light;
+}
 
 html.gaming-mode {
+  --bg-canvas: #090810;
+  --bg-surface: #131022;
+  --bg-surface-soft: #1a162e;
+  --bg-desk: rgba(19, 16, 34, 0.92);
+  --bg-pill: #1f1a38;
+  --bg-pill-hover: #292349;
+  --border-hairline: rgba(138, 63, 240, 0.22);
+  --border-strong: rgba(255, 106, 61, 0.35);
+
+  --ink-primary: #FFFFFF;
+  --ink-secondary: #CBD5E1;
+  --ink-muted: #94A3B8;
+
+  --indigo: #7366FF;
+  --indigo-hover: #5B4BFF;
+  --indigo-soft: rgba(115, 102, 255, 0.18);
+  --indigo-glow: rgba(115, 102, 255, 0.35);
+
+  --coral: #FF6A3D;
+  --coral-hover: #FF5C35;
+  --coral-soft: rgba(255, 106, 61, 0.18);
+  --coral-glow: rgba(255, 106, 61, 0.35);
+
+  --emerald: #10B981;
+  --emerald-soft: rgba(16, 185, 129, 0.18);
+  --emerald-glow: rgba(16, 185, 129, 0.35);
+
+  --amber: #FBBF24;
+  --amber-soft: rgba(251, 191, 36, 0.18);
+
+  --shadow-card: 0 6px 22px -4px rgba(0, 0, 0, 0.75);
+  --shadow-hover: 0 18px 40px -12px rgba(255, 106, 61, 0.25);
+  --shadow-rail: 0 12px 32px -8px rgba(0, 0, 0, 0.85);
+
   color-scheme: dark;
 }
 
-html.gaming-mode body {
-  background-color: #07060c !important;
-  color: #f1f5f9 !important;
-  background-image: 
-    radial-gradient(circle at 1px 1px, rgba(255, 106, 61, 0.08) 1px, transparent 0),
-    radial-gradient(at 0% 0%, rgba(255, 106, 61, 0.16) 0px, transparent 40%),
-    radial-gradient(at 100% 0%, rgba(106, 34, 184, 0.22) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(176, 69, 122, 0.12) 0px, transparent 65%) !important;
-  background-size: 24px 24px, 100% 100%, 100% 100%, 100% 100% !important;
+body {
+  background-color: var(--bg-canvas);
+  background-image:
+    radial-gradient(ellipse 65% 40% at 22% -5%, var(--indigo-soft), transparent 65%),
+    radial-gradient(ellipse 50% 35% at 88% -8%, var(--coral-soft), transparent 60%);
+  background-attachment: fixed;
+  color: var(--ink-primary);
+  min-height: 100vh;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  overflow-x: hidden;
 }
 
-/* Desktop Sidebar in Gaming Mode */
-html.gaming-mode aside {
-  background-color: #0d0b17 !important;
-  border-right-color: rgba(106, 34, 184, 0.3) !important;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.7) !important;
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--indigo);
 }
 
-/* Header in Gaming Mode */
-html.gaming-mode header {
-  background-color: rgba(13, 11, 23, 0.92) !important;
-  border-bottom-color: rgba(255, 106, 61, 0.25) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
+/* Base Card Surfaces */
+.surface-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Bottom mobile nav */
-html.gaming-mode .fixed.bottom-0 {
-  background-color: rgba(13, 11, 23, 0.96) !important;
-  border-top-color: rgba(106, 34, 184, 0.35) !important;
+/* Ensure ALL cards, stations, and simulator boxes follow dark theme in gaming mode */
+html.gaming-mode .surface-card,
+html.gaming-mode div[class*="rounded-2xl border"][class*="bg-white"],
+html.gaming-mode div[class*="rounded-3xl border"][class*="bg-white"],
+html.gaming-mode div[class*="rounded-xl border"][class*="bg-white"] {
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-hairline) !important;
+  box-shadow: var(--shadow-card) !important;
+  color: var(--ink-primary) !important;
 }
 
-/* Cards & Containers in Gaming Mode */
-html.gaming-mode .tech-card,
-html.gaming-mode [class*="rounded-2xl"][class*="border"][class*="bg-white"],
-html.gaming-mode [class*="rounded-3xl"][class*="border"][class*="bg-white"],
-html.gaming-mode [class*="rounded-xl"][class*="border"][class*="bg-white"] {
-  background-color: #120f22 !important;
-  border-color: rgba(106, 34, 184, 0.35) !important;
-  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.7), 0 0 15px -3px rgba(106, 34, 184, 0.15) !important;
+/* Internal sub-boxes inside station cards */
+html.gaming-mode div[class*="bg-slate-50"],
+html.gaming-mode div[class*="bg-slate-100"] {
+  background-color: var(--bg-surface-soft) !important;
+  border-color: var(--border-hairline) !important;
 }
 
-html.gaming-mode .tech-card:hover,
-html.gaming-mode [class*="rounded-2xl"][class*="border"][class*="bg-white"]:hover {
-  border-color: rgba(255, 106, 61, 0.5) !important;
-  box-shadow: 0 8px 30px -4px rgba(255, 106, 61, 0.2), 0 0 20px rgba(106, 34, 184, 0.3) !important;
-}
-
-/* User Staff Box at Bottom Left of Sidebar in Gaming Mode */
-html.gaming-mode .voro-user-box {
-  background: linear-gradient(135deg, #18142a 0%, #100d1e 100%) !important;
-  border: 1px solid rgba(255, 106, 61, 0.35) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 106, 61, 0.2) !important;
-}
-
-html.gaming-mode .voro-user-box .user-name {
-  color: #ffffff !important;
-}
-
-html.gaming-mode .voro-user-box .user-role {
-  color: #ff8c66 !important;
-}
-
-html.gaming-mode .voro-user-box button {
-  color: #cbd5e1 !important;
-}
-
-html.gaming-mode .voro-user-box button:hover {
-  background-color: rgba(255, 106, 61, 0.15) !important;
-  color: #ff6a3d !important;
-}
-
-/* Typography & Headings */
+/* Text adaptations in Gaming Mode */
 html.gaming-mode .text-slate-900,
 html.gaming-mode .text-slate-800,
 html.gaming-mode h1,
 html.gaming-mode h2,
 html.gaming-mode h3 {
-  color: #ffffff !important;
+  color: #FFFFFF !important;
 }
 
 html.gaming-mode .text-slate-700,
 html.gaming-mode .text-slate-600 {
-  color: #cbd5e1 !important;
+  color: #CBD5E1 !important;
 }
 
 html.gaming-mode .text-slate-500,
 html.gaming-mode .text-slate-400 {
-  color: #94a3b8 !important;
+  color: #94A3B8 !important;
 }
 
-/* Sidebar navigation links */
-html.gaming-mode nav a.text-slate-600 {
-  color: #94a3b8 !important;
+/* Outline buttons & action triggers */
+html.gaming-mode button[class*="border-slate-200"],
+html.gaming-mode button[class*="bg-white"],
+html.gaming-mode a[class*="border-slate-200"] {
+  background-color: var(--bg-surface-soft) !important;
+  border-color: var(--border-hairline) !important;
+  color: var(--ink-primary) !important;
 }
 
-html.gaming-mode nav a.text-slate-600:hover {
-  color: #ffffff !important;
-  background-color: rgba(255, 106, 61, 0.1) !important;
-}
-
-html.gaming-mode nav a.bg-gradient-to-r.from-brand-600.to-indigo-600 {
-  background: linear-gradient(135deg, #ff6a3d 0%, #b0457a 50%, #6a22b8 100%) !important;
-  box-shadow: 0 4px 20px rgba(255, 106, 61, 0.35) !important;
-  color: #ffffff !important;
-}
-
-/* Buttons in Gaming Mode */
-html.gaming-mode button.bg-gradient-to-r.from-brand-600.to-indigo-600,
-html.gaming-mode a.bg-gradient-to-r.from-brand-600.to-indigo-600 {
-  background: linear-gradient(135deg, #ff6a3d 0%, #d44d62 50%, #6a22b8 100%) !important;
-  box-shadow: 0 4px 18px rgba(255, 106, 61, 0.35) !important;
-  border-color: rgba(255, 106, 61, 0.4) !important;
-  color: #ffffff !important;
-}
-
-html.gaming-mode .text-brand-700,
-html.gaming-mode .text-brand-600 {
-  color: #ff7e54 !important;
-}
-
-/* Stat Box Icons in Gaming Mode - High visibility neon glowing icons */
-html.gaming-mode .grid.h-11.w-11.rounded-xl {
-  background: linear-gradient(135deg, rgba(255, 106, 61, 0.18) 0%, rgba(106, 34, 184, 0.3) 100%) !important;
-  border-color: rgba(255, 106, 61, 0.4) !important;
-  color: #ff8c66 !important;
-  box-shadow: 0 0 12px rgba(255, 106, 61, 0.15) !important;
-}
-
-html.gaming-mode .grid.h-11.w-11.rounded-xl svg {
-  color: #ff8c66 !important;
-}
-
-/* Empty State Cards (e.g., No active matches) */
-html.gaming-mode div[class*="border-dashed"] {
-  background-color: rgba(18, 15, 34, 0.6) !important;
-  border-color: rgba(106, 34, 184, 0.4) !important;
-}
-
-html.gaming-mode .rounded-2xl.bg-gradient-to-br.from-brand-50 {
-  background: linear-gradient(135deg, rgba(255, 106, 61, 0.15) 0%, rgba(106, 34, 184, 0.25) 100%) !important;
-  border-color: rgba(255, 106, 61, 0.35) !important;
-  color: #ff8c66 !important;
-}
-
-/* Modals & Dialogs */
+/* Modals and dialog overlays */
 html.gaming-mode [role="dialog"],
 html.gaming-mode div[class*="max-h-"][class*="bg-white"] {
-  background-color: #0e0c1a !important;
-  border-color: rgba(255, 106, 61, 0.4) !important;
-  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.9), 0 0 40px rgba(255, 106, 61, 0.25) !important;
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-hairline) !important;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.9) !important;
+  color: var(--ink-primary) !important;
 }
 
-/* Inputs, Selects & Tables in Gaming Mode */
 html.gaming-mode input,
 html.gaming-mode select,
 html.gaming-mode textarea {
-  background-color: #171329 !important;
-  border-color: rgba(106, 34, 184, 0.45) !important;
-  color: #ffffff !important;
+  background-color: var(--bg-surface-soft) !important;
+  border-color: var(--border-hairline) !important;
+  color: #FFFFFF !important;
 }
 
 html.gaming-mode input:focus,
 html.gaming-mode select:focus,
 html.gaming-mode textarea:focus {
-  border-color: #ff6a3d !important;
-  box-shadow: 0 0 0 2px rgba(255, 106, 61, 0.35) !important;
+  border-color: var(--coral) !important;
+  box-shadow: 0 0 0 2px var(--coral-soft) !important;
 }
 
-html.gaming-mode input::placeholder,
-html.gaming-mode textarea::placeholder {
-  color: #64748b !important;
-}
-
-/* Table rows and borders */
+/* Tables */
 html.gaming-mode table {
-  color: #e2e8f0 !important;
+  color: #E2E8F0 !important;
 }
 
 html.gaming-mode th {
-  background-color: rgba(23, 19, 41, 0.95) !important;
-  color: #ff8c66 !important;
-  border-color: rgba(106, 34, 184, 0.35) !important;
+  background-color: var(--bg-surface-soft) !important;
+  border-color: var(--border-hairline) !important;
+  color: var(--coral) !important;
 }
 
 html.gaming-mode td {
-  border-color: rgba(106, 34, 184, 0.2) !important;
+  border-color: var(--border-hairline) !important;
 }
 
 html.gaming-mode tr:hover td {
-  background-color: rgba(255, 106, 61, 0.08) !important;
+  background-color: var(--indigo-soft) !important;
 }
 
-/* Internal stat cards, subtle sub-containers */
-html.gaming-mode div[class*="bg-slate-50"],
-html.gaming-mode div[class*="bg-slate-100"] {
-  background-color: rgba(25, 21, 44, 0.8) !important;
-  border-color: rgba(106, 34, 184, 0.3) !important;
-}
-
-html.gaming-mode .hud-box {
-  background: linear-gradient(180deg, #171329 0%, #0e0c1a 100%) !important;
-  border-color: rgba(106, 34, 184, 0.4) !important;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6) !important;
-}
-
-/* Outline buttons & icons in Gaming Mode */
-html.gaming-mode button[class*="border-slate-200"],
-html.gaming-mode button[class*="border-slate-100"],
-html.gaming-mode a[class*="border-slate-200"] {
-  background-color: rgba(25, 21, 44, 0.9) !important;
-  border-color: rgba(106, 34, 184, 0.45) !important;
-  color: #f1f5f9 !important;
-}
-
-html.gaming-mode button[class*="border-slate-200"]:hover,
-html.gaming-mode a[class*="border-slate-200"]:hover {
-  background-color: rgba(255, 106, 61, 0.2) !important;
-  border-color: rgba(255, 106, 61, 0.6) !important;
-  color: #ffffff !important;
-}
-
-/* Badges for Gaming Mode */
-html.gaming-mode span[class*="bg-brand-50"],
-html.gaming-mode span[class*="bg-brand-100"],
-html.gaming-mode span[class*="bg-emerald-50"],
-html.gaming-mode span[class*="bg-amber-50"],
-html.gaming-mode span[class*="bg-cyan-50"],
-html.gaming-mode span[class*="bg-slate-100"] {
-  background-color: rgba(106, 34, 184, 0.3) !important;
-  color: #ff8c66 !important;
-  border-color: rgba(106, 34, 184, 0.6) !important;
-}
-
-/* Page Header Accent Pill */
-html.gaming-mode span.bg-gradient-to-r.from-brand-600.to-cyan-500 {
-  background: linear-gradient(90deg, #ff6a3d 0%, #6a22b8 100%) !important;
-  box-shadow: 0 0 10px rgba(255, 106, 61, 0.5) !important;
-}
-
-/* Divider borders */
-html.gaming-mode .border-slate-100,
-html.gaming-mode .border-slate-200,
-html.gaming-mode .border-slate-200\/70,
-html.gaming-mode .border-slate-200\/80,
-html.gaming-mode .border-slate-200\/90 {
-  border-color: rgba(106, 34, 184, 0.3) !important;
-}
-
-.tnum { 
-  font-variant-numeric: tabular-nums; 
+.tnum {
+  font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
-}
-
-@keyframes pop { 
-  from { opacity: 0; transform: translateY(6px) scale(.985); } 
-  to { opacity: 1; transform: none; } 
-}
-
-.pop { animation: pop .22s cubic-bezier(0.16, 1, 0.3, 1); }
-@media (prefers-reduced-motion: reduce) { .pop { animation: none; } }
-
-/* Modern Tech Chamfered Corner effect */
-.tech-card {
-  position: relative;
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.tech-card:hover {
-  border-color: rgba(147, 51, 234, 0.35);
-  box-shadow: 0 12px 30px -10px rgba(124, 58, 237, 0.12), 0 4px 12px -4px rgba(15, 23, 42, 0.04);
-}
-
-/* Digital LED live clock panel */
-.hud-box {
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-  border: 1px solid #e2e8f0;
-  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.04);
 }
 
 #receipt-print { display: none; }

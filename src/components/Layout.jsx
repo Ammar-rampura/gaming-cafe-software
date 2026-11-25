@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { 
   LayoutDashboard, Gamepad2, Car, History, BarChart3, Settings, 
-  LogOut, Menu, X, WifiOff, Plus, Zap, Shield, ChevronRight, Sun, Flame 
+  LogOut, Menu, X, WifiOff, Plus, Zap, Shield, Sun, Flame 
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import { useTheme } from '../context/ThemeContext'
 import { useFlows } from './Flows'
-import { Button, cx } from './ui'
+import { cx } from './ui'
 import { VORA_LOGO } from '../lib/logoData'
 
 const NAV = [
@@ -28,245 +28,190 @@ export default function Layout({ children }) {
   const [open, setOpen] = useState(false)
   const name = settings?.cafe_name || 'VORA'
 
-  const navLinks = (
-    <nav className="flex flex-1 flex-col gap-1 px-3 py-3 overflow-y-auto">
-      <div className="px-3 pb-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
-        Operations Menu
-      </div>
-      {NAV.filter((n) => !n[3] || isAdmin).map(([to, label, Icon]) => (
-        <NavLink 
-          key={to} 
-          to={to} 
-          end={to === '/'} 
-          onClick={() => setOpen(false)}
-          className={({ isActive }) => cx(
-            'group relative flex items-center justify-between rounded-xl px-3.5 py-3 text-xs font-bold transition-all duration-150',
-            isActive 
-              ? 'bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-md shadow-brand-600/30' 
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 active:bg-slate-200/70'
-          )}>
-          {({ isActive }) => (
-            <>
-              <div className="flex items-center gap-3">
-                <Icon className={cx('h-4 w-4 transition-transform group-hover:scale-110', isActive ? 'text-white' : 'text-slate-400 group-hover:text-brand-600')} />
-                <span className="text-sm sm:text-xs">{label}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                {to === '/' && active?.length > 0 && (
-                  <span className={cx('flex h-5 items-center justify-center rounded-full px-2 text-[10px] font-black', isActive ? 'bg-white/20 text-white' : 'bg-brand-100 text-brand-700')}>
-                    {active.length}
-                  </span>
-                )}
-                <ChevronRight className={cx('h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-opacity lg:hidden', isActive && 'opacity-100')} />
-              </div>
-            </>
-          )}
-        </NavLink>
-      ))}
-    </nav>
-  )
-
-  const brand = (
-    <div className="border-b border-slate-100 px-5 py-4">
-      <div className="flex items-center gap-3">
-        {settings?.logo_url ? (
-          <img src={settings.logo_url} alt="" className="h-10 w-10 rounded-xl object-contain ring-2 ring-brand-500/20" />
-        ) : (
-          <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-slate-900 p-1 shadow-md shadow-brand-600/30 ring-1 ring-slate-200">
-            <img src={VORA_LOGO} alt="VORA" className="h-full w-full rounded-lg object-contain" />
-            <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-            </span>
-          </div>
-        )}
-        <div className="min-w-0">
-          <p className="truncate font-display text-sm font-black tracking-tight text-slate-900">{name}</p>
-          <p className="text-[10px] font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-purple-600">
-            V.O.R.A. GAMING OS
-          </p>
-        </div>
-      </div>
-    </div>
-  )
-
-  const user = (
-    <div className="voro-user-box m-3 rounded-2xl border border-slate-200/70 bg-gradient-to-b from-white to-slate-50/80 p-3 shadow-sm">
-      <div className="flex items-center justify-between">
-        <div className="min-w-0">
-          <div className="flex items-center gap-1.5">
-            <p className="user-name truncate text-xs font-bold text-slate-800">{profile?.full_name || 'Staff'}</p>
-            {isAdmin && <Shield className="h-3 w-3 text-[#ff6a3d] shrink-0" />}
-          </div>
-          <span className="user-role inline-block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">{profile?.role}</span>
-        </div>
-        <button 
-          onClick={signOut} 
-          title="Sign out" 
-          className="rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition">
-          <LogOut className="h-4 w-4" />
-        </button>
-      </div>
-    </div>
-  )
-
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-[17rem_1fr] pb-16 lg:pb-0">
-      {/* Desktop Sidebar */}
-      <aside className="sticky top-0 hidden h-screen flex-col border-r border-slate-200/80 bg-white/80 backdrop-blur-md lg:flex">
-        {brand}
-        {navLinks}
-        {user}
+    <div className="min-h-screen flex flex-col lg:flex-row gap-5 max-w-[1640px] mx-auto p-3 sm:p-5">
+      {/* 1. Zone 1: Floating Icon Rail (Desktop) */}
+      <aside className="hidden lg:flex sticky top-5 h-[calc(100vh-40px)] w-[76px] flex-col items-center justify-between rounded-[26px] bg-[var(--bg-surface)] border border-[var(--border-hairline)] shadow-[var(--shadow-rail)] p-3.5 z-40 transition-all duration-300">
+        <div className="flex flex-col items-center gap-6 w-full">
+          {/* Logo Brand Icon */}
+          <NavLink to="/" className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--indigo)] to-[#8375FF] p-1.5 flex items-center justify-center shadow-lg shadow-[var(--indigo-glow)] transition-transform hover:scale-105">
+            <img src={VORA_LOGO} alt="VORA" className="w-full h-full object-contain rounded-xl" />
+          </NavLink>
+
+          {/* Navigation Links with Hover Tooltip */}
+          <nav className="flex flex-col items-center gap-2.5 w-full">
+            {NAV.filter((n) => !n[3] || isAdmin).map(([to, label, Icon]) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={to === '/'}
+                className={({ isActive }) => cx(
+                  'group relative w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200',
+                  isActive 
+                    ? 'bg-[var(--indigo)] text-white shadow-md shadow-[var(--indigo-glow)]' 
+                    : 'text-[var(--ink-muted)] hover:bg-[var(--bg-pill)] hover:text-[var(--ink-primary)]'
+                )}
+              >
+                {({ isActive }) => (
+                  <>
+                    <Icon className="w-5 h-5 transition-transform group-hover:scale-110" />
+                    {/* Tooltip */}
+                    <span className="absolute left-[calc(100%+14px)] px-3 py-1.5 rounded-full bg-[var(--ink-primary)] text-[var(--bg-surface)] text-xs font-bold whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 -translate-x-2 transition-all duration-150 z-50 shadow-xl">
+                      {label}
+                    </span>
+                    {to === '/' && active?.length > 0 && (
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--coral)] text-white text-[9px] font-black shadow-sm">
+                        {active.length}
+                      </span>
+                    )}
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+
+        {/* Bottom User Profile & Sign Out */}
+        <div className="flex flex-col items-center gap-3 w-full">
+          <button
+            onClick={toggleTheme}
+            title={isGaming ? 'Switch to Light Mode' : 'Switch to Gaming Mode'}
+            className="w-11 h-11 rounded-full flex items-center justify-center bg-[var(--bg-pill)] text-[var(--ink-primary)] hover:bg-[var(--bg-pill-hover)] transition-transform hover:scale-105"
+          >
+            {isGaming ? <Flame className="w-5 h-5 text-[var(--coral)] animate-pulse" /> : <Sun className="w-5 h-5 text-amber-500" />}
+          </button>
+
+          <button
+            onClick={signOut}
+            title="Sign out"
+            className="w-11 h-11 rounded-full flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-950 text-white font-bold text-xs shadow-md hover:scale-105 transition-transform"
+          >
+            {profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : 'A'}
+          </button>
+        </div>
       </aside>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer */}
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden" onClick={() => setOpen(false)}>
-          <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm transition-opacity" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <aside 
-            className="pop absolute left-0 top-0 flex h-full w-[82vw] max-w-xs flex-col bg-white shadow-2xl z-10" 
+            className="absolute left-0 top-0 flex h-full w-[80vw] max-w-xs flex-col bg-[var(--bg-surface)] shadow-2xl z-10 p-5"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pr-3">
-              <div className="flex-1">{brand}</div>
-              <button 
-                className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700" 
-                onClick={() => setOpen(false)} 
-                aria-label="Close menu"
-              >
-                <X className="h-5 w-5" />
+            <div className="flex items-center justify-between pb-4 border-b border-[var(--border-hairline)] mb-4">
+              <div className="flex items-center gap-2.5">
+                <img src={VORA_LOGO} alt="VORA" className="w-9 h-9 rounded-xl object-contain bg-slate-900 p-1" />
+                <div>
+                  <h3 className="font-display font-bold text-sm text-[var(--ink-primary)]">{name}</h3>
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--coral)]">V.O.R.A. GAMING OS</span>
+                </div>
+              </div>
+              <button onClick={() => setOpen(false)} className="p-1 rounded-xl text-[var(--ink-muted)] hover:bg-[var(--bg-pill)]">
+                <X className="w-5 h-5" />
               </button>
             </div>
-            {navLinks}
-            {user}
+
+            <nav className="flex flex-col gap-1.5 flex-1 overflow-y-auto">
+              {NAV.filter((n) => !n[3] || isAdmin).map(([to, label, Icon]) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={to === '/'}
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) => cx(
+                    'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all',
+                    isActive ? 'bg-[var(--indigo)] text-white shadow-md' : 'text-[var(--ink-muted)] hover:bg-[var(--bg-pill)]'
+                  )}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{label}</span>
+                </NavLink>
+              ))}
+            </nav>
+
+            <div className="pt-4 border-t border-[var(--border-hairline)] flex items-center justify-between">
+              <span className="text-xs font-bold text-[var(--ink-secondary)]">{profile?.full_name || 'Staff'}</span>
+              <button onClick={signOut} className="text-xs font-bold text-rose-500 hover:underline">Sign out</button>
+            </div>
           </aside>
         </div>
       )}
 
-      {/* Main Content Area */}
-      <div className="min-w-0 flex flex-col">
-        {/* Top Header */}
-        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-slate-200/80 bg-white/90 px-3.5 py-2.5 backdrop-blur-md sm:px-6 sm:py-3 lg:px-8">
-          <div className="flex items-center gap-2.5 min-w-0">
+      {/* 2. Main Workspace (Center + Integrated Operations) */}
+      <div className="flex-1 min-w-0 flex flex-col gap-5">
+        {/* Top Header Bar */}
+        <header className="flex items-center justify-between gap-3 px-1 py-1">
+          <div className="flex items-center gap-3">
             <button 
-              className="rounded-xl p-2 text-slate-700 hover:bg-slate-100 active:bg-slate-200 lg:hidden -ml-1" 
               onClick={() => setOpen(true)} 
-              aria-label="Open menu"
+              className="lg:hidden p-2 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)] text-[var(--ink-primary)]"
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="w-5 h-5" />
             </button>
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="h-8 w-8 shrink-0 overflow-hidden rounded-lg bg-slate-900 p-0.5 lg:hidden">
-                <img src={VORA_LOGO} alt="VORA" className="h-full w-full rounded-md object-contain" />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--ink-muted)]">
+                  OPERATIONS DESK
+                </span>
+                <span className="text-slate-300">/</span>
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--indigo)]">
+                  LIVE TELEMETRY
+                </span>
               </div>
-              <p className="truncate font-display text-sm font-black text-slate-900 lg:hidden">{name}</p>
+              <h1 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-[var(--ink-primary)]">
+                {name}
+              </h1>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {/* Light Mode vs Gaming Mode Toggle */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--emerald-soft)] text-[var(--emerald)] text-xs font-extrabold tracking-wide">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--emerald)] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--emerald)]"></span>
+              </span>
+              <span>LIVE SYSTEM</span>
+            </div>
+
             <button
               onClick={toggleTheme}
-              title={isGaming ? 'Switch to Light Mode' : 'Switch to Gaming Mode'}
-              className={cx(
-                'relative flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-bold transition-all duration-300 border shadow-sm cursor-pointer select-none',
-                isGaming 
-                  ? 'bg-gradient-to-r from-orange-500/20 via-pink-500/20 to-purple-600/30 border-orange-500/50 text-orange-400 hover:border-orange-400 shadow-[0_0_15px_rgba(255,106,61,0.25)]' 
-                  : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
-              )}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--bg-surface)] border border-[var(--border-hairline)] text-xs font-bold text-[var(--ink-primary)] shadow-sm hover:border-[var(--border-strong)] transition-all"
             >
               {isGaming ? (
                 <>
-                  <Flame className="h-4 w-4 text-[#ff6a3d] animate-pulse" />
-                  <span className="hidden sm:inline font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#ff6a3d] via-[#ff8c66] to-[#b0457a]">GAMING MODE</span>
-                  <span className="sm:hidden font-extrabold text-[#ff6a3d]">GAME</span>
+                  <Flame className="w-4 h-4 text-[var(--coral)] animate-pulse" />
+                  <span className="font-extrabold text-[var(--coral)]">GAMING MODE</span>
                 </>
               ) : (
                 <>
-                  <Sun className="h-4 w-4 text-amber-500" />
-                  <span className="hidden sm:inline font-bold text-slate-700">LIGHT MODE</span>
-                  <span className="sm:hidden font-bold text-slate-700">LIGHT</span>
+                  <Sun className="w-4 h-4 text-amber-500" />
+                  <span>LIGHT MODE</span>
                 </>
               )}
             </button>
 
-            <div className="hidden sm:flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50/70 px-3 py-1 text-xs font-bold text-emerald-700">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>LIVE SYSTEM</span>
-            </div>
-            <Button onClick={() => openCheckIn()} size="sm" className="sm:h-9 sm:px-4 sm:text-sm shadow-brand-600/30">
-              <Plus className="h-4 w-4 stroke-[2.5]" />
-              <span className="font-extrabold sm:inline">Start Session</span>
-            </Button>
+            <button
+              onClick={() => openCheckIn()}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[var(--indigo)] hover:bg-[var(--indigo-hover)] text-white text-xs sm:text-sm font-bold shadow-md shadow-[var(--indigo-glow)] transition-all active:scale-95"
+            >
+              <Plus className="w-4 h-4 stroke-[2.5]" />
+              <span>Start Session</span>
+            </button>
           </div>
         </header>
 
         {(!online || error) && (
-          <div className="flex items-center gap-2 bg-amber-500/10 border-b border-amber-200 px-4 py-2 text-xs font-semibold text-amber-900 lg:px-8">
+          <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-300/40 rounded-2xl px-4 py-2.5 text-xs font-semibold text-amber-800">
             <WifiOff className="h-4 w-4 text-amber-600 shrink-0" />
-            <span className="truncate">{!online ? 'Offline mode active. timers count locally.' : `Server message: ${error}`}</span>
+            <span className="truncate">{!online ? 'Offline mode active. Timers count locally.' : `Server message: ${error}`}</span>
           </div>
         )}
 
-        <main className="px-3.5 py-4 sm:px-6 sm:py-6 lg:px-8 max-w-7xl w-full mx-auto flex-1">
+        {/* Stage Content */}
+        <main className="flex-1 min-w-0">
           {children}
         </main>
-      </div>
-
-      {/* Mobile Bottom Quick-Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-slate-200/90 bg-white/95 px-2 py-1.5 backdrop-blur-md lg:hidden">
-        <NavLink 
-          to="/" 
-          end
-          className={({ isActive }) => cx(
-            'flex flex-col items-center gap-0.5 rounded-lg py-1 px-3 text-[10px] font-bold transition',
-            isActive ? 'text-brand-600' : 'text-slate-400 hover:text-slate-600'
-          )}
-        >
-          <LayoutDashboard className="h-4 w-4" />
-          <span>Dashboard</span>
-        </NavLink>
-
-        <NavLink 
-          to="/stations" 
-          className={({ isActive }) => cx(
-            'flex flex-col items-center gap-0.5 rounded-lg py-1 px-3 text-[10px] font-bold transition',
-            isActive ? 'text-brand-600' : 'text-slate-400 hover:text-slate-600'
-          )}
-        >
-          <Gamepad2 className="h-4 w-4" />
-          <span>PS5</span>
-        </NavLink>
-
-        <button 
-          onClick={() => openCheckIn()}
-          className="relative -top-3 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-brand-700 via-brand-600 to-indigo-600 text-white shadow-lg shadow-brand-600/40 active:scale-95"
-          aria-label="Start new session"
-        >
-          <Plus className="h-6 w-6 stroke-[2.5]" />
-        </button>
-
-        <NavLink 
-          to="/simulators" 
-          className={({ isActive }) => cx(
-            'flex flex-col items-center gap-0.5 rounded-lg py-1 px-3 text-[10px] font-bold transition',
-            isActive ? 'text-brand-600' : 'text-slate-400 hover:text-slate-600'
-          )}
-        >
-          <Car className="h-4 w-4" />
-          <span>Rigs</span>
-        </NavLink>
-
-        <NavLink 
-          to="/history" 
-          className={({ isActive }) => cx(
-            'flex flex-col items-center gap-0.5 rounded-lg py-1 px-3 text-[10px] font-bold transition',
-            isActive ? 'text-brand-600' : 'text-slate-400 hover:text-slate-600'
-          )}
-        >
-          <History className="h-4 w-4" />
-          <span>History</span>
-        </NavLink>
       </div>
     </div>
   )
