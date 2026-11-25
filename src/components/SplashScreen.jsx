@@ -58,7 +58,7 @@ export default function SplashScreen({ onFinish }) {
             }`}
           >
             <img
-              src="/logo.png"
+              src="/logo.png?v=2"
               alt="VORA Logo"
               className="h-full w-full rounded-2xl object-contain drop-shadow-sm transition-transform duration-500 hover:scale-105"
             />

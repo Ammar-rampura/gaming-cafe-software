@@ -38,8 +38,8 @@ export default function Login() {
         <div className="absolute left-0 top-0 h-1.5 w-full rounded-t-2xl bg-gradient-to-r from-brand-600 via-indigo-600 to-cyan-500" />
 
         <div className="mb-6 flex items-center gap-3.5">
-          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-black p-1 shadow-lg shadow-brand-600/30 ring-1 ring-slate-200">
-            <img src="/logo.png" alt="VORA" className="h-full w-full rounded-xl object-cover" />
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-slate-900 p-1 shadow-lg shadow-brand-600/30 ring-1 ring-slate-200">
+            <img src="/logo.png?v=2" alt="VORA" className="h-full w-full rounded-xl object-contain" />
           </div>
           <div>
             <h1 className="font-display text-2xl font-black tracking-tight text-slate-900">VORA</h1>
