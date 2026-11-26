@@ -76,7 +76,26 @@ const defaultSeed = {
 function getTable(name) {
   try {
     const raw = localStorage.getItem(STORAGE_PREFIX + name)
-    if (raw) return JSON.parse(raw)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      // Auto-deduplicate gaming_stations if stored with duplicates
+      if (name === 'gaming_stations' && Array.isArray(parsed)) {
+        const seen = new Set()
+        const unique = []
+        for (const s of parsed) {
+          const key = (s.name || '').trim().toLowerCase()
+          if (key && !seen.has(key)) {
+            seen.add(key)
+            unique.push(s)
+          }
+        }
+        if (unique.length !== parsed.length) {
+          setTable(name, unique)
+          return unique
+        }
+      }
+      return parsed
+    }
   } catch (e) {
     console.error(`Error loading table ${name}:`, e)
   }

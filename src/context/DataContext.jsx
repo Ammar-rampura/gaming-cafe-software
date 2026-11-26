@@ -42,7 +42,20 @@ export function DataProvider({ children }) {
       const t1 = Date.now()
       offset.current = new Date(sn.data).getTime() - (t0 + t1) / 2
       setNow(Date.now() + offset.current)
-      setData({ stations: st.data.sort(byName), rules: ru.data, discounts: di.data, snacks: snk.data || [], settings: se.data, active: ac.data, pending: pe.data, today: td.data })
+      
+      // Deduplicate stations by normalized name to prevent duplicate cards
+      const rawStations = Array.isArray(st.data) ? st.data : []
+      const seenNames = new Set()
+      const uniqueStations = []
+      for (const station of rawStations) {
+        const norm = (station.name || '').trim().toLowerCase()
+        if (norm && !seenNames.has(norm)) {
+          seenNames.add(norm)
+          uniqueStations.push(station)
+        }
+      }
+
+      setData({ stations: uniqueStations.sort(byName), rules: ru.data, discounts: di.data, snacks: snk.data || [], settings: se.data, active: ac.data, pending: pe.data, today: td.data })
       setError(null)
     } catch (e) {
       setError(e.message || 'Could not reach the server')

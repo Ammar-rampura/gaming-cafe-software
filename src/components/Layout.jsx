@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { 
   LayoutDashboard, Gamepad2, Car, History, BarChart3, Settings, 
-  Menu, X, WifiOff, Plus, Sun, Flame, LogOut 
+  Menu, X, WifiOff, Plus, Sun, Flame, LogOut, ShieldCheck
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
