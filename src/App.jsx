@@ -7,6 +7,7 @@ import { FlowProvider } from './components/Flows'
 import Layout from './components/Layout'
 import { Spinner } from './components/ui'
 import SplashScreen from './components/SplashScreen'
+import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Stations from './pages/Stations'
@@ -18,6 +19,7 @@ import SuperAdmin from './pages/SuperAdmin'
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true)
+  const [authView, setAuthView] = useState(null) // null (shows Landing) | 'signin' | 'register_cafe'
   const { session, profile, loading, isAdmin, isSuperAdmin, signOut } = useAuth()
 
   const handleSplashFinish = () => {
@@ -32,7 +34,14 @@ export default function App() {
           {loading ? (
             <Spinner />
           ) : !session ? (
-            <Login />
+            authView ? (
+              <Login initialMode={authView} onBackToLanding={() => setAuthView(null)} />
+            ) : (
+              <Landing 
+                onOpenLogin={() => setAuthView('signin')} 
+                onOpenRegister={() => setAuthView('register_cafe')} 
+              />
+            )
           ) : !profile?.active ? (
             <div className="mx-auto mt-24 max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
               <h1 className="font-display text-xl font-bold">Waiting for approval</h1>
