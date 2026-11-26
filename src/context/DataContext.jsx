@@ -26,7 +26,15 @@ export function DataProvider({ children }) {
     try {
       const ts = startOfDay().toISOString()
       const t0 = Date.now()
-      const [st, ru, di, snk, se, ac, pe, td, sn] = await Promise.all([
+      let serverTime = new Date().toISOString()
+      try {
+        const snRes = await supabase.rpc('server_now')
+        if (snRes?.data) serverTime = snRes.data
+      } catch (e) {
+        // Fallback to local clock if RPC server_now not loaded in remote schema
+      }
+
+      const [st, ru, di, snk, se, ac, pe, td] = await Promise.all([
         supabase.from('gaming_stations').select('*').eq('active', true),
         supabase.from('pricing_rules').select('*').order('hourly_rate'),
         supabase.from('discounts').select('*').order('name'),
@@ -35,12 +43,11 @@ export function DataProvider({ children }) {
         supabase.from('gaming_sessions').select('*').eq('status', 'active').order('check_in'),
         supabase.from('gaming_sessions').select('*').eq('status', 'ended').order('check_out'),
         supabase.from('gaming_sessions').select('*').or(`check_in.gte.${ts},check_out.gte.${ts}`).order('check_in', { ascending: false }),
-        supabase.rpc('server_now'),
       ])
-      const failed = [st, ru, di, snk, se, ac, pe, td, sn].find((r) => r.error)
+      const failed = [st, ru, di, snk, se, ac, pe, td].find((r) => r.error)
       if (failed) throw failed.error
       const t1 = Date.now()
-      offset.current = new Date(sn.data).getTime() - (t0 + t1) / 2
+      offset.current = new Date(serverTime).getTime() - (t0 + t1) / 2
       setNow(Date.now() + offset.current)
       
       // Deduplicate stations by normalized name to prevent duplicate cards
