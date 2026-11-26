@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { Store, Gamepad2, IndianRupee, Tag, Users, KeyRound, ScrollText, Plus, Pencil, Trash2, Upload, Utensils, Coffee } from 'lucide-react'
+import { Store, Gamepad2, IndianRupee, Tag, Users, KeyRound, ScrollText, Plus, Pencil, Trash2, Upload, Utensils, Coffee, Palette, Check } from 'lucide-react'
 import { PageHeader, Card, Button, Field, Input, Select, Modal, Badge, Empty, Spinner, useToast, cx } from '../components/ui'
 import { useData } from '../context/DataContext'
 import { useAuth, toEmail } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 import { supabase, SUPABASE_URL, SUPABASE_KEY } from '../lib/supabase'
 import { run, rpc, cleanError } from '../lib/api'
 import { BILLING_METHODS } from '../lib/billing'
 import { inr, fmtDT, categoryName } from '../lib/format'
 
 const TABS = [
+  ['appearance', 'Color Themes', Palette],
   ['cafe', 'Cafe & Receipt', Store], 
   ['stations', 'Stations', Gamepad2], 
   ['pricing', 'Pricing & Rates', IndianRupee], 
@@ -21,13 +23,13 @@ const TABS = [
 ]
 
 export default function Settings() {
-  const [tab, setTab] = useState('cafe')
+  const [tab, setTab] = useState('appearance')
   const { loading } = useData()
   if (loading) return <Spinner />
   return (
     <>
-      <PageHeader title="Admin Settings & Configurations" sub="Manage cafe details, rates, snacks catalog, and staff." />
-      <div className="mb-5 flex gap-1.5 overflow-x-auto rounded-2xl bg-slate-100 p-1 no-scrollbar">
+      <PageHeader title="Admin Settings & Configurations" sub="Manage interface color themes, cafe details, rates, and staff." />
+      <div className="mb-5 flex gap-1.5 overflow-x-auto rounded-2xl bg-[var(--bg-pill)] p-1 no-scrollbar">
         {TABS.map(([k, l, Icon]) => (
           <button 
             key={k} 
@@ -35,14 +37,15 @@ export default function Settings() {
             className={cx(
               'flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-bold transition whitespace-nowrap', 
               tab === k 
-                ? 'bg-white text-brand-700 shadow-sm' 
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-[var(--bg-surface)] text-[var(--crimson)] shadow-sm' 
+                : 'text-[var(--ink-muted)] hover:text-[var(--ink-primary)]'
             )}
           >
             <Icon className="h-4 w-4" />{l}
           </button>
         ))}
       </div>
+      {tab === 'appearance' && <AppearanceTab />}
       {tab === 'cafe' && <CafeTab />}
       {tab === 'stations' && <StationsTab />}
       {tab === 'pricing' && <PricingTab />}
@@ -52,6 +55,84 @@ export default function Settings() {
       {tab === 'security' && <PasswordTab />}
       {tab === 'audit' && <AuditTab />}
     </>
+  )
+}
+
+// ---------------- Color Themes & Appearance ----------------
+function AppearanceTab() {
+  const { paletteId, selectPalette, palettes, isGaming, toggleTheme } = useTheme()
+  const toast = useToast()
+
+  const handleSelect = (id, name) => {
+    selectPalette(id)
+    toast(`Switched theme to ${name}`)
+  }
+
+  return (
+    <div className="max-w-4xl space-y-6">
+      <Card className="p-6">
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-1">
+            <Palette className="h-5 w-5 text-[var(--crimson)]" />
+            <h2 className="font-display text-lg font-bold text-[var(--ink-primary)]">Interface Color System</h2>
+          </div>
+          <p className="text-xs sm:text-sm text-[var(--ink-muted)]">
+            Choose your signature color palette. Clicking any swatch instantly changes all buttons, gauges, cards, glows, and navigation accents across the entire software.
+          </p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {palettes.map((p) => {
+            const isSelected = paletteId === p.id
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => handleSelect(p.id, p.name)}
+                className={cx(
+                  'relative flex flex-col justify-between rounded-2xl p-4 text-left border-2 transition-all duration-200 cursor-pointer select-none group',
+                  isSelected 
+                    ? 'border-[var(--crimson)] bg-[var(--bg-surface-soft)] shadow-lg shadow-[var(--crimson-glow)] scale-[1.02]' 
+                    : 'border-[var(--border-hairline)] bg-[var(--bg-surface)] hover:border-[var(--border-strong)] hover:-translate-y-0.5'
+                )}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-display font-bold text-sm text-[var(--ink-primary)] group-hover:text-[var(--crimson)] transition-colors">
+                      {p.name}
+                    </span>
+                    {isSelected && (
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--crimson)] text-white shadow-sm">
+                        <Check className="h-3 w-3 stroke-[3]" />
+                      </span>
+                    )}
+                  </div>
+                  <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider text-[var(--ink-muted)] mb-4">
+                    {p.tag}
+                  </span>
+                </div>
+
+                {/* Swatch color dots preview */}
+                <div className="flex items-center justify-between pt-3 border-t border-[var(--border-hairline)]">
+                  <div className="flex items-center gap-2">
+                    {p.preview.map((hex, i) => (
+                      <span
+                        key={i}
+                        className="h-6 w-6 rounded-full border-2 border-white/60 shadow-md transition-transform group-hover:scale-110"
+                        style={{ backgroundColor: hex }}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-[11px] font-bold text-[var(--ink-muted)] font-mono">
+                    {isSelected ? 'ACTIVE' : 'APPLY'}
+                  </span>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </Card>
+    </div>
   )
 }
 

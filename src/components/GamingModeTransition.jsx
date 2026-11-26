@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import './GamingModeHex.css';
 
-export default function GamingModeTransition({ active, mode = 'enter', onSwitch, onDone }) {
+export default function GamingModeTransition({ active, mode = 'enter', palette, onSwitch, onDone }) {
   const canvasRef = useRef(null);
   const blurRef = useRef(null);
   const iconRef = useRef(null);
@@ -34,13 +34,11 @@ export default function GamingModeTransition({ active, mode = 'enter', onSwitch,
     let finished = false;
     const TOUT = 1.75;
 
-    // Custom Swatch RGBs:
-    // Crimson: [217, 24, 75]
-    // Wine/Burgundy: [115, 20, 45]
-    // Charcoal: [60, 60, 60]
-    const CO = mode === 'enter' ? [217, 24, 75] : [60, 60, 60];
-    const CP = [115, 20, 45];
-    const CC = mode === 'enter' ? [60, 60, 60] : [217, 24, 75];
+    // Use palette RGB if provided, otherwise default to crimson
+    const prgb = palette?.rgb || { co: [217, 24, 75], cp: [115, 20, 45], cc: [60, 60, 60] };
+    const CO = mode === 'enter' ? prgb.co : prgb.cc;
+    const CP = prgb.cp;
+    const CC = mode === 'enter' ? prgb.cc : prgb.co;
 
     function mix(a, b, t) {
       return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
