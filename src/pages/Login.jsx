@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { 
   Gamepad2, 
   Store, 
@@ -13,12 +13,13 @@ import {
   Car, 
   ArrowRight, 
   CheckCircle2, 
-  Zap,
-  Clock,
-  Send,
-  FileCheck2,
-  Sun,
-  Flame
+  Clock, 
+  Send, 
+  FileCheck2, 
+  Sun, 
+  Flame,
+  Eye,
+  EyeOff
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -34,6 +35,7 @@ export default function Login() {
   // Sign in state
   const [signInUser, setSignInUser] = useState('')
   const [signInPass, setSignInPass] = useState('')
+  const [showPass, setShowPass] = useState(false)
   
   // Register Cafe Request state
   const [cafeName, setCafeName] = useState('')
@@ -51,17 +53,111 @@ export default function Login() {
 
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
+  const [launching, setLaunching] = useState(false)
+  const [liveBilling, setLiveBilling] = useState(48260)
+
+  // Interactive mouse parallax
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const canvasRef = useRef(null)
+
+  // Live billing counter ticker
+  useEffect(() => {
+    const t = setInterval(() => {
+      setLiveBilling(prev => prev + Math.floor(15 + Math.random() * 65))
+    }, 2400)
+    return () => clearInterval(t)
+  }, [])
+
+  // Canvas telemetry network animation from vora-login.html
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    const W = 260
+    const H = 110
+    canvas.width = W * dpr
+    canvas.height = H * dpr
+    ctx.scale(dpr, dpr)
+
+    const N = [
+      [8, 62, 0], [52, 16, 1], [100, 76, 1], [140, 50, 0],
+      [176, 26, 0], [178, 72, 0], [250, 50, 1], [112, 28, 0]
+    ].map((n, i) => ({ x: n[0], y: n[1], big: n[2], p: i * 1.3 }))
+    const E = [[0, 1], [1, 2], [2, 3], [3, 4], [2, 5], [5, 6], [1, 7], [7, 3]]
+
+    let animId
+    let start = Date.now()
+    const render = () => {
+      const tm = Date.now() - start
+      ctx.clearRect(0, 0, W, H)
+      const isDark = document.documentElement.classList.contains('gaming-mode')
+      const lineCol = isDark ? 'rgba(217, 24, 75, 0.25)' : 'rgba(60, 60, 60, 0.16)'
+      const muteCol = isDark ? '#a0969a' : '#8b8486'
+      const bgCol = isDark ? '#1a1618' : '#f8f5f0'
+      const redCol = '#D9184B'
+
+      const P = N.map(n => ({
+        x: n.x + Math.sin(tm / 1700 + n.p) * 3,
+        y: n.y + Math.cos(tm / 2100 + n.p) * 4,
+        big: n.big
+      }))
+
+      ctx.lineWidth = 1
+      E.forEach(([from, to], i) => {
+        const a = P[from]
+        const b = P[to]
+        ctx.strokeStyle = lineCol
+        ctx.beginPath()
+        ctx.moveTo(a.x, a.y)
+        ctx.lineTo(b.x, b.y)
+        ctx.stroke()
+
+        // Traveling telemetry packet
+        const k = (tm / 2600 + i * 0.17) % 1
+        ctx.fillStyle = redCol
+        ctx.beginPath()
+        ctx.arc(a.x + (b.x - a.x) * k, a.y + (b.y - a.y) * k, 1.8, 0, Math.PI * 2)
+        ctx.fill()
+      })
+
+      P.forEach(q => {
+        ctx.beginPath()
+        ctx.arc(q.x, q.y, q.big ? 6 : 2.8, 0, Math.PI * 2)
+        ctx.fillStyle = q.big ? bgCol : muteCol
+        ctx.fill()
+        if (q.big) {
+          ctx.strokeStyle = redCol
+          ctx.lineWidth = 1.5
+          ctx.stroke()
+        }
+      })
+
+      animId = requestAnimationFrame(render)
+    }
+
+    render()
+    return () => cancelAnimationFrame(animId)
+  }, [isGaming])
+
+  // Mouse move handler for luxury dial parallax
+  const handleMouseMove = (e) => {
+    const x = ((e.clientX / window.innerWidth) - 0.5) * 16
+    const y = ((e.clientY / window.innerHeight) - 0.5) * 16
+    setMousePos({ x: x.toFixed(1), y: y.toFixed(1) })
+  }
 
   // Handle Login submission
   const handleSignIn = async (e) => {
     e.preventDefault()
     setErr('')
     setBusy(true)
+    setLaunching(true)
     try {
       await signIn(signInUser, signInPass)
     } catch (x) {
       setErr(x.message)
-    } finally {
+      setLaunching(false)
       setBusy(false)
     }
   }
@@ -110,16 +206,18 @@ export default function Login() {
   }
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center p-4 sm:p-6 bg-[var(--bg-canvas)] text-[var(--ink-primary)] overflow-x-hidden selection:bg-[var(--crimson)] selection:text-white transition-colors duration-200">
-      
-      {/* Floating Theme Switcher Button at top right */}
-      <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-20">
+    <div 
+      onMouseMove={handleMouseMove}
+      className="relative min-h-screen w-full flex items-center justify-center p-3 sm:p-6 lg:p-8 bg-[var(--bg-canvas)] text-[var(--ink-primary)] overflow-x-hidden selection:bg-[var(--crimson)] selection:text-white transition-colors duration-300"
+    >
+      {/* Top Floating Theme Switcher */}
+      <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-30">
         <button
           type="button"
           onClick={toggleTheme}
           className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all border shadow-lg cursor-pointer ${
             isGaming
-              ? 'bg-[#121827] text-amber-400 border-white/10 hover:border-amber-400/50'
+              ? 'bg-[#18181c] text-amber-400 border-white/10 hover:border-amber-400/50'
               : 'bg-white text-slate-700 border-slate-200 hover:border-[var(--crimson)]'
           }`}
           title={isGaming ? 'Switch to Light Mode' : 'Switch to Gaming Mode'}
@@ -138,385 +236,367 @@ export default function Login() {
         </button>
       </div>
 
-      {/* Dynamic ambient gaming lights & mesh */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-96 sm:w-[550px] h-96 sm:h-[550px] rounded-full bg-[var(--crimson)]/15 blur-[120px]" />
-        <div className="absolute top-1/2 -right-32 w-96 sm:w-[500px] h-96 sm:h-[500px] rounded-full bg-[var(--wine)]/20 blur-[130px]" />
-        <div className="absolute -bottom-32 left-1/3 w-80 sm:w-[480px] h-80 sm:h-[480px] rounded-full bg-cyan-500/10 blur-[140px]" />
-        <div 
-          className="absolute inset-0 opacity-[0.035]"
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)`,
-            backgroundSize: '32px 32px'
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 w-full max-w-4xl grid md:grid-cols-12 gap-0 overflow-hidden rounded-3xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] shadow-2xl backdrop-blur-xl">
+      {/* Main Luxury Stage Layout */}
+      <div className="relative z-10 w-full max-w-6xl grid lg:grid-cols-12 gap-8 lg:gap-12 items-center py-6 sm:py-8">
         
-        {/* Left Column: Brand Hero / Lounge Presentation */}
-        <div className="md:col-span-5 relative flex flex-col justify-between p-6 sm:p-8 bg-gradient-to-b from-[#182035]/90 via-[#0e1422] to-[#0a0d16] border-b md:border-b-0 md:border-r border-white/10">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#D9184B] via-[#73142D] to-indigo-500" />
-
-          <div>
-            {/* VORA Logo & Title */}
-            <div className="flex items-center gap-3.5 mb-6">
-              <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-2xl bg-slate-950 p-1 shadow-lg shadow-[#D9184B]/30 ring-1 ring-white/15">
-                <img src={VORA_LOGO} alt="VORA" className="h-full w-full rounded-xl object-contain" />
+        {/* Left Column: Brand Hero Presentation & Live Telemetry (vora-login.html inspired) */}
+        <div className="lg:col-span-5 flex flex-col justify-center space-y-6 max-w-lg mx-auto lg:mx-0">
+          
+          {/* Logo Brand Header */}
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[var(--crimson)] to-[var(--wine)] p-1.5 flex items-center justify-center shadow-lg shadow-[var(--crimson-glow)]">
+              <img src={VORA_LOGO} alt="VORA" className="w-full h-full object-contain rounded-xl" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-display font-black text-2xl tracking-tight text-[var(--ink-primary)]">VORA</span>
+                <span className="rounded-full bg-[var(--crimson)]/15 px-2 py-0.5 text-[10px] font-black tracking-widest text-[var(--crimson)] border border-[var(--crimson)]/30">
+                  OS 2.0
+                </span>
               </div>
+              <p className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--ink-muted)]">
+                Virtual Operations &amp; Recreation Organizer
+              </p>
+            </div>
+          </div>
+
+          {/* Headline */}
+          <div className="space-y-2.5">
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-[42px] font-normal tracking-tight text-[var(--ink-primary)] leading-[1.15]">
+              The Operating System for Modern Gaming
+            </h1>
+            <p className="text-sm text-[var(--ink-muted)] leading-relaxed">
+              Unified lounge operations, station automation &amp; live billing telemetry.
+            </p>
+          </div>
+
+          {/* Canvas Network Graph */}
+          <div className="hidden sm:block pt-1">
+            <canvas ref={canvasRef} className="w-[260px] h-[110px] max-w-full opacity-90" />
+            <div className="mt-3 flex items-center gap-3 text-xs text-[var(--ink-muted)]">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--crimson)] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--crimson)]"></span>
+              </span>
               <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="font-display text-2xl font-black tracking-tight text-white">VORA</h1>
-                  <span className="rounded-full bg-[#D9184B]/20 px-2 py-0.5 text-[9px] font-black tracking-widest text-[#D9184B] border border-[#D9184B]/30">
+                <b className="block font-display text-xl sm:text-2xl font-normal text-[var(--ink-primary)] tracking-tight">
+                  ₹ {liveBilling.toLocaleString('en-IN')}
+                </b>
+                <span className="text-[11px] text-[var(--ink-muted)]">Live network billing telemetry</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Highlights */}
+          <div className="grid grid-cols-2 gap-2.5 pt-2 text-xs">
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)] shadow-sm">
+              <Gamepad2 className="h-4 w-4 text-[var(--crimson)] shrink-0" />
+              <span className="text-[11px] font-bold text-[var(--ink-primary)]">Station Telemetry</span>
+            </div>
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)] shadow-sm">
+              <Shield className="h-4 w-4 text-emerald-500 shrink-0" />
+              <span className="text-[11px] font-bold text-[var(--ink-primary)]">Verified Security</span>
+            </div>
+          </div>
+
+          <div className="text-[11px] font-mono text-[var(--ink-muted)] flex items-center gap-2 pt-2">
+            <span>VORA OS 2.0</span>
+            <span>•</span>
+            <span>HIGH SECURITY ENGINE</span>
+            <span>•</span>
+            <span>v2.4.8</span>
+          </div>
+        </div>
+
+        {/* Right Column: The Precision Luxury Radial Dial / Card */}
+        <div className="lg:col-span-7 flex justify-center w-full">
+          <div 
+            style={{
+              transform: `translate(${mousePos.x}px, ${mousePos.y}px)`,
+              transition: 'transform 0.25s ease-out'
+            }}
+            className={`relative w-full max-w-[540px] aspect-auto sm:aspect-square rounded-[36px] p-6 sm:p-10 flex flex-col justify-center items-center shadow-2xl transition-all duration-300 border border-[var(--border-hairline)] bg-[var(--bg-surface)] ${
+              launching ? 'ring-2 ring-[var(--crimson)] shadow-[var(--crimson-glow)]' : ''
+            }`}
+          >
+            {/* Top Dial Mode Indicator Pill */}
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[var(--bg-surface)] border border-[var(--border-hairline)] shadow-md flex items-center gap-2 text-[11px] font-bold text-[var(--ink-secondary)]">
+              <span className="h-2 w-2 rounded-full bg-[var(--crimson)] animate-pulse" />
+              <span>{isGaming ? 'Obsidian Gaming Mode' : 'Light Operations Mode'}</span>
+            </div>
+
+            {/* Inner Content Area */}
+            <div className="w-full max-w-sm mx-auto space-y-5">
+              
+              {/* Header inside Dial */}
+              <div className="text-center space-y-1">
+                <div className="inline-flex items-center gap-2 font-display text-lg font-bold text-[var(--ink-primary)]">
+                  <span>VORA</span>
+                  <span className="text-[10px] font-mono text-[var(--crimson)] border border-[var(--crimson)]/30 rounded px-1.5 py-0.5">
                     OS 2.0
                   </span>
                 </div>
-                <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-                  Virtual Operations &amp; Recreation Organizer
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h2 className="text-xl sm:text-2xl font-black text-white leading-tight font-display">
-                The Operating System for Modern Gaming Lounges
-              </h2>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Connect your PS5 stations, motion simulator rigs, snacks bar, and live billing telemetry under one unified cloud-enabled platform.
-              </p>
-            </div>
-
-            {/* Feature highlights */}
-            <div className="mt-8 space-y-3">
-              <div className="flex items-center gap-3 rounded-xl bg-white/[0.04] p-2.5 border border-white/5">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#D9184B]/20 text-[#D9184B]">
-                  <Gamepad2 className="h-4 w-4" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-200">Per-Minute Station Telemetry</h4>
-                  <p className="text-[10px] text-slate-400">Zero-drift game timing &amp; automatic tier billing</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 rounded-xl bg-white/[0.04] p-2.5 border border-white/5">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-400">
-                  <Zap className="h-4 w-4" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-200">Dual Mode Architecture</h4>
-                  <p className="text-[10px] text-slate-400">Daytime Operations Desk &amp; Neon Gaming OS</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 rounded-xl bg-white/[0.04] p-2.5 border border-white/5">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-400">
-                  <Building2 className="h-4 w-4" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-200">Enterprise Verified Lounges</h4>
-                  <p className="text-[10px] text-slate-400">Security vetted onboarding &amp; dedicated domain</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 pt-4 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-400">
-            <span className="flex items-center gap-1.5 font-medium">
-              <Shield className="h-3.5 w-3.5 text-[#D9184B]" /> High Security Engine
-            </span>
-            <span className="font-mono text-[10px] text-slate-400">v2.4.0</span>
-          </div>
-        </div>
-
-        {/* Right Column: Sign In or Register Cafe Request */}
-        <div className="md:col-span-7 p-6 sm:p-10 flex flex-col justify-center bg-[var(--bg-surface)]">
-          
-          {/* Mode Switch Tabs (Only if not in submitted screen) */}
-          {!submitted && (
-            <div className="mb-6 flex rounded-xl bg-[var(--bg-surface-soft)] p-1 border border-[var(--border-hairline)]">
-              <button
-                type="button"
-                onClick={() => { setMode('signin'); setErr(''); }}
-                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                  mode === 'signin'
-                    ? 'bg-gradient-to-r from-[#D9184B] to-[#73142D] text-white shadow-md shadow-[#D9184B]/20'
-                    : 'text-[var(--ink-muted)] hover:text-[var(--ink-primary)]'
-                }`}
-              >
-                <User className="h-3.5 w-3.5" /> Staff / Admin Sign In
-              </button>
-              <button
-                type="button"
-                onClick={() => { setMode('register_cafe'); setErr(''); }}
-                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                  mode === 'register_cafe'
-                    ? 'bg-gradient-to-r from-[#D9184B] to-[#73142D] text-white shadow-md shadow-[#D9184B]/20'
-                    : 'text-[var(--ink-muted)] hover:text-[var(--ink-primary)]'
-                }`}
-              >
-                <Store className="h-3.5 w-3.5" /> Register Your Gaming Cafe
-              </button>
-            </div>
-          )}
-
-          {/* Error Alert */}
-          {err && (
-            <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-600 dark:text-rose-300">
-              <span className="shrink-0 mt-0.5">⚠️</span>
-              <span>{err}</span>
-            </div>
-          )}
-
-          {/* ===================== MODE 1: SIGN IN ===================== */}
-          {!submitted && mode === 'signin' && (
-            <div>
-              <div className="mb-5">
-                <h3 className="text-xl font-bold font-display text-[var(--ink-primary)]">Welcome Back</h3>
-                <p className="text-xs text-[var(--ink-muted)] mt-1">
-                  Authenticate with your staff ID or issued administrator credentials.
+                <h2 className="font-display text-2xl sm:text-3xl text-[var(--ink-primary)] font-normal">
+                  {submitted ? 'Request Received' : mode === 'signin' ? 'Welcome Back' : 'Register Cafe'}
+                </h2>
+                <p className="text-xs text-[var(--ink-muted)]">
+                  {submitted ? 'Verification underway' : mode === 'signin' ? 'Authenticate with your staff or admin credentials' : 'Submit your lounge details for onboarding'}
                 </p>
               </div>
 
-              <form onSubmit={handleSignIn} className="space-y-4">
-                <div>
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1.5 flex items-center gap-1.5">
-                    <User className="h-3.5 w-3.5 text-[#D9184B]" /> Username / Staff ID
-                  </label>
-                  <input
-                    required
-                    type="text"
-                    value={signInUser}
-                    onChange={(e) => setSignInUser(e.target.value)}
-                    placeholder="e.g. admin or your cafe username"
-                    className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3.5 py-2.5 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B] focus:ring-1 focus:ring-[#D9184B] transition"
-                  />
+              {/* Mode Toggle Switch (Sign In vs Register) */}
+              {!submitted && (
+                <div className="flex p-1 rounded-2xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)]">
+                  <button
+                    type="button"
+                    onClick={() => { setMode('signin'); setErr(''); }}
+                    className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                      mode === 'signin'
+                        ? 'bg-[var(--crimson)] text-white shadow-sm'
+                        : 'text-[var(--ink-muted)] hover:text-[var(--ink-primary)]'
+                    }`}
+                  >
+                    <User className="h-3.5 w-3.5" /> Sign In
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setMode('register_cafe'); setErr(''); }}
+                    className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                      mode === 'register_cafe'
+                        ? 'bg-[var(--crimson)] text-white shadow-sm'
+                        : 'text-[var(--ink-muted)] hover:text-[var(--ink-primary)]'
+                    }`}
+                  >
+                    <Store className="h-3.5 w-3.5" /> Register Cafe
+                  </button>
                 </div>
+              )}
 
-                <div>
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1.5 flex items-center gap-1.5">
-                    <Lock className="h-3.5 w-3.5 text-[#D9184B]" /> Password
-                  </label>
-                  <input
-                    required
-                    type="password"
-                    value={signInPass}
-                    onChange={(e) => setSignInPass(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3.5 py-2.5 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B] focus:ring-1 focus:ring-[#D9184B] transition"
-                  />
+              {/* Error message */}
+              {err && (
+                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs font-semibold text-rose-600 dark:text-rose-300 flex items-start gap-2">
+                  <span className="shrink-0 mt-0.5">⚠️</span>
+                  <span>{err}</span>
                 </div>
+              )}
 
-                <div className="pt-2">
+              {/* MODE 1: SIGN IN FORM */}
+              {!submitted && mode === 'signin' && (
+                <form onSubmit={handleSignIn} className="space-y-4">
+                  {/* Floating-style input fields */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-muted)] flex items-center gap-1.5">
+                      <User className="h-3.5 w-3.5 text-[var(--crimson)]" /> Username / Staff ID
+                    </label>
+                    <input
+                      required
+                      type="text"
+                      value={signInUser}
+                      onChange={(e) => setSignInUser(e.target.value)}
+                      placeholder="e.g. admin or cafe username"
+                      className="w-full rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface-soft)] px-3.5 py-2.5 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[var(--crimson)] transition"
+                    />
+                  </div>
+
+                  <div className="space-y-1 relative">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-muted)] flex items-center gap-1.5">
+                      <Lock className="h-3.5 w-3.5 text-[var(--crimson)]" /> Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        required
+                        type={showPass ? 'text' : 'password'}
+                        value={signInPass}
+                        onChange={(e) => setSignInPass(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface-soft)] px-3.5 py-2.5 pr-10 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[var(--crimson)] transition"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPass(!showPass)}
+                        className="absolute right-3 top-3 text-[var(--ink-muted)] hover:text-[var(--ink-primary)] cursor-pointer"
+                        title={showPass ? 'Hide password' : 'Show password'}
+                      >
+                        {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                  </div>
+
                   <button
                     type="submit"
                     disabled={busy}
-                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#D9184B] to-[#73142D] hover:from-[#f0235b] hover:to-[#8c1836] py-3 text-sm font-bold text-white shadow-lg shadow-[#D9184B]/30 transition disabled:opacity-50 cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[var(--crimson)] to-[var(--wine)] py-3 px-6 text-sm font-bold text-white shadow-lg shadow-[var(--crimson-glow)] hover:opacity-95 transition active:scale-[0.98] disabled:opacity-50 cursor-pointer"
                   >
-                    {busy ? 'Authenticating...' : 'Enter Lounge Operations'}
+                    <span>{busy ? 'Authenticating...' : 'Enter Lounge'}</span>
                     <ArrowRight className="h-4 w-4" />
                   </button>
-                </div>
-              </form>
 
-              <div className="mt-8 rounded-xl bg-[var(--bg-surface-soft)] p-3 border border-[var(--border-hairline)] flex items-center justify-between text-xs text-[var(--ink-muted)]">
-                <span>Want to register your cafe on VORA?</span>
-                <button
-                  type="button"
-                  onClick={() => { setMode('register_cafe'); setErr(''); }}
-                  className="font-bold text-[#D9184B] hover:underline cursor-pointer"
-                >
-                  Apply to Register →
-                </button>
-              </div>
-            </div>
-          )}
+                  <div className="pt-2 text-center">
+                    <button
+                      type="button"
+                      onClick={() => { setMode('register_cafe'); setErr(''); }}
+                      className="text-xs text-[var(--ink-muted)] hover:text-[var(--crimson)] transition cursor-pointer"
+                    >
+                      Want to onboard your cafe on VORA? <span className="font-bold underline">Apply here</span>
+                    </button>
+                  </div>
+                </form>
+              )}
 
-          {/* ===================== MODE 2: REGISTER CAFE REQUEST ===================== */}
-          {!submitted && mode === 'register_cafe' && (
-            <div>
-              <div className="mb-4">
-                <h3 className="text-lg font-bold font-display text-[var(--ink-primary)]">Register Your Gaming Lounge</h3>
-                <p className="text-xs text-[var(--ink-muted)] mt-1">
-                  Submit your cafe details for security verification. Once approved, login credentials will be issued.
-                </p>
-              </div>
+              {/* MODE 2: REGISTER CAFE FORM */}
+              {!submitted && mode === 'register_cafe' && (
+                <form onSubmit={handleSubmitRequest} className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[10px] font-bold uppercase text-[var(--ink-muted)] block mb-1">
+                        Cafe Name *
+                      </label>
+                      <input
+                        required
+                        type="text"
+                        value={cafeName}
+                        onChange={(e) => setCafeName(e.target.value)}
+                        placeholder="e.g. Apex Arena"
+                        className="w-full rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface-soft)] px-3 py-2 text-xs text-[var(--ink-primary)] focus:outline-none focus:border-[var(--crimson)]"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase text-[var(--ink-muted)] block mb-1">
+                        Owner Name *
+                      </label>
+                      <input
+                        required
+                        type="text"
+                        value={ownerName}
+                        onChange={(e) => setOwnerName(e.target.value)}
+                        placeholder="e.g. John Doe"
+                        className="w-full rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface-soft)] px-3 py-2 text-xs text-[var(--ink-primary)] focus:outline-none focus:border-[var(--crimson)]"
+                      />
+                    </div>
+                  </div>
 
-              <form onSubmit={handleSubmitRequest} className="space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[10px] font-bold uppercase text-[var(--ink-muted)] block mb-1">
+                        Email Address *
+                      </label>
+                      <input
+                        required
+                        type="email"
+                        value={regEmail}
+                        onChange={(e) => setRegEmail(e.target.value)}
+                        placeholder="owner@cafe.com"
+                        className="w-full rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface-soft)] px-3 py-2 text-xs text-[var(--ink-primary)] focus:outline-none focus:border-[var(--crimson)]"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase text-[var(--ink-muted)] block mb-1">
+                        Contact Phone
+                      </label>
+                      <input
+                        type="tel"
+                        value={regPhone}
+                        onChange={(e) => setRegPhone(e.target.value)}
+                        placeholder="+91 98765 43210"
+                        className="w-full rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface-soft)] px-3 py-2 text-xs text-[var(--ink-primary)] focus:outline-none focus:border-[var(--crimson)]"
+                      />
+                    </div>
+                  </div>
+
                   <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1 flex items-center gap-1.5">
-                      <Store className="h-3.5 w-3.5 text-[#D9184B]" /> Gaming Lounge Name *
+                    <label className="text-[10px] font-bold uppercase text-[var(--ink-muted)] block mb-1">
+                      City &amp; Address
                     </label>
                     <input
-                      required
                       type="text"
-                      value={cafeName}
-                      onChange={(e) => setCafeName(e.target.value)}
-                      placeholder="e.g. CyberZone Lounge"
-                      className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3 py-2 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B]"
+                      value={regAddress}
+                      onChange={(e) => setRegAddress(e.target.value)}
+                      placeholder="e.g. Mumbai, MG Road"
+                      className="w-full rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface-soft)] px-3 py-2 text-xs text-[var(--ink-primary)] focus:outline-none focus:border-[var(--crimson)]"
                     />
                   </div>
-                  <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1 flex items-center gap-1.5">
-                      <User className="h-3.5 w-3.5 text-[var(--ink-muted)]" /> Owner / Manager Name *
-                    </label>
-                    <input
-                      required
-                      type="text"
-                      value={ownerName}
-                      onChange={(e) => setOwnerName(e.target.value)}
-                      placeholder="e.g. Alex Drake"
-                      className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3 py-2 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B]"
-                    />
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1 flex items-center gap-1.5">
-                      <Mail className="h-3.5 w-3.5 text-[#D9184B]" /> Official Email *
-                    </label>
-                    <input
-                      required
-                      type="email"
-                      value={regEmail}
-                      onChange={(e) => setRegEmail(e.target.value)}
-                      placeholder="owner@cafe.com"
-                      className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3 py-2 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B]"
-                    />
+                  <div className="grid grid-cols-2 gap-3 pt-1">
+                    <div>
+                      <label className="text-[10px] font-bold uppercase text-[var(--ink-muted)] block mb-1 flex items-center gap-1">
+                        <Tv className="h-3 w-3 text-cyan-500" /> PS5 Stations
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="50"
+                        value={stationCount}
+                        onChange={(e) => setStationCount(e.target.value)}
+                        className="w-full rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface-soft)] px-3 py-1.5 text-xs text-[var(--ink-primary)]"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase text-[var(--ink-muted)] block mb-1 flex items-center gap-1">
+                        <Car className="h-3 w-3 text-orange-500" /> Racing Rigs
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="20"
+                        value={simulatorCount}
+                        onChange={(e) => setSimulatorCount(e.target.value)}
+                        className="w-full rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface-soft)] px-3 py-1.5 text-xs text-[var(--ink-primary)]"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1 flex items-center gap-1.5">
-                      <Phone className="h-3.5 w-3.5 text-[var(--ink-muted)]" /> Contact Phone
-                    </label>
-                    <input
-                      type="tel"
-                      value={regPhone}
-                      onChange={(e) => setRegPhone(e.target.value)}
-                      placeholder="+91 9876543210"
-                      className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3 py-2 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B]"
-                    />
-                  </div>
-                </div>
 
-                <div>
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1 flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5 text-[var(--ink-muted)]" /> City &amp; Lounge Address
-                  </label>
-                  <input
-                    type="text"
-                    value={regAddress}
-                    onChange={(e) => setRegAddress(e.target.value)}
-                    placeholder="e.g. Sector 18, Cyber Hub, Mumbai"
-                    className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3 py-2 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B]"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 rounded-xl bg-[var(--bg-surface-soft)] p-3 border border-[var(--border-hairline)]">
-                  <div>
-                    <label className="text-[10px] text-[var(--ink-muted)] mb-1 flex items-center gap-1">
-                      <Tv className="h-3 w-3 text-cyan-600 dark:text-cyan-400" /> PS5 Stations
-                    </label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="50"
-                      value={stationCount}
-                      onChange={(e) => setStationCount(e.target.value)}
-                      className="w-full rounded-lg bg-[var(--bg-surface)] border border-[var(--border-hairline)] px-2.5 py-1.5 text-xs text-[var(--ink-primary)]"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[10px] text-[var(--ink-muted)] mb-1 flex items-center gap-1">
-                      <Car className="h-3 w-3 text-orange-600 dark:text-orange-400" /> Racing Rigs
-                    </label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="20"
-                      value={simulatorCount}
-                      onChange={(e) => setSimulatorCount(e.target.value)}
-                      className="w-full rounded-lg bg-[var(--bg-surface)] border border-[var(--border-hairline)] px-2.5 py-1.5 text-xs text-[var(--ink-primary)]"
-                    />
-                  </div>
-                </div>
-
-                <div className="pt-2">
                   <button
                     type="submit"
                     disabled={busy}
-                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#D9184B] to-[#73142D] py-3 text-sm font-bold text-white shadow-lg shadow-[#D9184B]/20 hover:opacity-95 disabled:opacity-50 cursor-pointer"
+                    className="w-full mt-2 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[var(--crimson)] to-[var(--wine)] py-2.5 px-6 text-xs font-bold text-white shadow-md shadow-[var(--crimson-glow)] hover:opacity-95 transition disabled:opacity-50 cursor-pointer"
                   >
-                    {busy ? 'Submitting Application...' : 'Submit Registration Request'}
-                    <Send className="h-4 w-4" />
+                    <span>{busy ? 'Submitting...' : 'Submit Application'}</span>
+                    <Send className="h-3.5 w-3.5" />
+                  </button>
+
+                  <div className="text-center pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setMode('signin')}
+                      className="text-[11px] text-[var(--ink-muted)] hover:underline cursor-pointer"
+                    >
+                      Already approved? Sign in here
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* MODE 3: SUBMITTED CONFIRMATION */}
+              {submitted && (
+                <div className="text-center space-y-4 py-2">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                    <FileCheck2 className="h-7 w-7" />
+                  </div>
+
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-sm text-[var(--ink-primary)]">Application Submitted</h3>
+                    <p className="text-xs text-[var(--ink-muted)] leading-relaxed">
+                      Our platform team is completing verification. Your username &amp; temporary password will be sent to <strong>{submittedCafe?.email}</strong>.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSubmitted(false)
+                      setMode('signin')
+                    }}
+                    className="px-5 py-2 rounded-full bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] text-xs font-bold text-[var(--ink-primary)] hover:border-[var(--crimson)] transition cursor-pointer"
+                  >
+                    Return to Login
                   </button>
                 </div>
-              </form>
+              )}
 
-              <div className="mt-4 text-center">
-                <button
-                  type="button"
-                  onClick={() => setMode('signin')}
-                  className="text-xs text-[var(--ink-muted)] hover:text-[var(--ink-primary)] cursor-pointer"
-                >
-                  Already have an approved account? <span className="text-[#D9184B] font-bold">Sign In</span>
-                </button>
-              </div>
             </div>
-          )}
-
-          {/* ===================== MODE 3: SUCCESS / PENDING VERIFICATION SCREEN ===================== */}
-          {submitted && (
-            <div className="text-center py-6 px-2 animate-in fade-in duration-300">
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 shadow-xl shadow-emerald-500/10">
-                <FileCheck2 className="h-8 w-8 stroke-[2.2]" />
-              </div>
-
-              <h3 className="text-xl font-bold font-display text-[var(--ink-primary)] mb-2">
-                Your Request Has Been Submitted!
-              </h3>
-
-              <div className="max-w-md mx-auto my-4 rounded-2xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] p-4 text-left space-y-2.5">
-                <div className="flex items-center justify-between text-xs border-b border-[var(--border-hairline)] pb-2">
-                  <span className="text-[var(--ink-muted)]">Gaming Lounge:</span>
-                  <span className="font-bold text-[var(--ink-primary)]">{submittedCafe?.cafeName}</span>
-                </div>
-                <div className="flex items-center justify-between text-xs border-b border-[var(--border-hairline)] pb-2">
-                  <span className="text-[var(--ink-muted)]">Applicant:</span>
-                  <span className="font-bold text-[var(--ink-primary)]">{submittedCafe?.ownerName}</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[var(--ink-muted)]">Notification Email:</span>
-                  <span className="font-bold text-cyan-600 dark:text-cyan-400">{submittedCafe?.email}</span>
-                </div>
-              </div>
-
-              <div className="max-w-md mx-auto rounded-xl bg-amber-500/10 border border-amber-500/20 p-3.5 text-xs text-amber-700 dark:text-amber-200/90 leading-relaxed text-left flex items-start gap-2.5 mb-6">
-                <Clock className="h-4 w-4 shrink-0 text-amber-500 mt-0.5" />
-                <p>
-                  Our security team is conducting a background check. Once approved, your <strong>Username and Master Password</strong> will be automatically delivered to your registered email address.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setSubmitted(false)
-                  setMode('signin')
-                  setCafeName('')
-                  setOwnerName('')
-                  setRegEmail('')
-                  setRegPhone('')
-                  setRegAddress('')
-                }}
-                className="inline-flex items-center gap-2 rounded-xl bg-[var(--bg-surface-soft)] hover:bg-[var(--border-hairline)] px-6 py-2.5 text-xs font-bold text-[var(--ink-primary)] border border-[var(--border-hairline)] transition cursor-pointer"
-              >
-                Return to Login Page
-              </button>
-            </div>
-          )}
-
+          </div>
         </div>
+
       </div>
     </div>
   )

@@ -100,18 +100,56 @@ body {
   width: 6px;
   height: 6px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
+  background: var(--border-hairline);
   border-radius: 9999px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--crimson);
+  background: var(--border-strong);
+}
+
+/* =========================================================================
+   VORA LUXURY DIAL & RADIAL GAUGES (Adapted from vora-login.html)
+   ========================================================================= */
+@property --sweep { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --prog { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes sweep {
+  to { --sweep: 360deg; }
+}
+@keyframes prog {
+  to { --prog: 360deg; }
+}
+@keyframes dialIn {
+  from { opacity: 0; transform: scale(0.92) rotate(-8deg); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes plateIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes launchSpin {
+  to { transform: rotate(720deg); }
+}
+@keyframes headspin {
+  from { rotate: 0deg; }
+  to { rotate: 360deg; }
+}
+@keyframes pingSlow {
+  0% { box-shadow: 0 0 0 0 rgba(217, 24, 75, 0.6); }
+  70%, 100% { box-shadow: 0 0 0 12px transparent; }
+}
+@keyframes twinkle {
+  50% { transform: scale(1.25) rotate(45deg); opacity: 0.5; }
+}
+@keyframes breathGlow {
+  50% { box-shadow: 0 8px 24px rgba(217, 24, 75, 0.45), 0 0 0 8px rgba(217, 24, 75, 0.12); }
 }
 
 /* Base Card Surfaces */
