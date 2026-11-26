@@ -229,18 +229,18 @@ export default function Login() {
         </div>
 
         {/* Right Column: Sign In or Register Cafe Request */}
-        <div className="md:col-span-7 p-6 sm:p-10 flex flex-col justify-center">
+        <div className="md:col-span-7 p-6 sm:p-10 flex flex-col justify-center bg-[var(--bg-surface)]">
           
           {/* Mode Switch Tabs (Only if not in submitted screen) */}
           {!submitted && (
-            <div className="mb-6 flex rounded-xl bg-black/40 p-1 border border-white/10">
+            <div className="mb-6 flex rounded-xl bg-[var(--bg-surface-soft)] p-1 border border-[var(--border-hairline)]">
               <button
                 type="button"
                 onClick={() => { setMode('signin'); setErr(''); }}
                 className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                   mode === 'signin'
                     ? 'bg-gradient-to-r from-[#D9184B] to-[#73142D] text-white shadow-md shadow-[#D9184B]/20'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-[var(--ink-muted)] hover:text-[var(--ink-primary)]'
                 }`}
               >
                 <User className="h-3.5 w-3.5" /> Staff / Admin Sign In
@@ -251,7 +251,7 @@ export default function Login() {
                 className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                   mode === 'register_cafe'
                     ? 'bg-gradient-to-r from-[#D9184B] to-[#73142D] text-white shadow-md shadow-[#D9184B]/20'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-[var(--ink-muted)] hover:text-[var(--ink-primary)]'
                 }`}
               >
                 <Store className="h-3.5 w-3.5" /> Register Your Gaming Cafe
@@ -261,7 +261,7 @@ export default function Login() {
 
           {/* Error Alert */}
           {err && (
-            <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-300">
+            <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-600 dark:text-rose-300">
               <span className="shrink-0 mt-0.5">⚠️</span>
               <span>{err}</span>
             </div>
@@ -271,15 +271,15 @@ export default function Login() {
           {!submitted && mode === 'signin' && (
             <div>
               <div className="mb-5">
-                <h3 className="text-xl font-bold font-display text-white">Welcome Back</h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <h3 className="text-xl font-bold font-display text-[var(--ink-primary)]">Welcome Back</h3>
+                <p className="text-xs text-[var(--ink-muted)] mt-1">
                   Authenticate with your staff ID or issued administrator credentials.
                 </p>
               </div>
 
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div>
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5 flex items-center gap-1.5">
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1.5 flex items-center gap-1.5">
                     <User className="h-3.5 w-3.5 text-[#D9184B]" /> Username / Staff ID
                   </label>
                   <input
@@ -288,12 +288,12 @@ export default function Login() {
                     value={signInUser}
                     onChange={(e) => setSignInUser(e.target.value)}
                     placeholder="e.g. admin or your cafe username"
-                    className="w-full rounded-xl bg-white/[0.05] border border-white/10 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D9184B] focus:ring-1 focus:ring-[#D9184B] transition"
+                    className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3.5 py-2.5 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B] focus:ring-1 focus:ring-[#D9184B] transition"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1.5 flex items-center gap-1.5">
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1.5 flex items-center gap-1.5">
                     <Lock className="h-3.5 w-3.5 text-[#D9184B]" /> Password
                   </label>
                   <input
@@ -302,7 +302,7 @@ export default function Login() {
                     value={signInPass}
                     onChange={(e) => setSignInPass(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full rounded-xl bg-white/[0.05] border border-white/10 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D9184B] focus:ring-1 focus:ring-[#D9184B] transition"
+                    className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3.5 py-2.5 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B] focus:ring-1 focus:ring-[#D9184B] transition"
                   />
                 </div>
 
@@ -318,7 +318,7 @@ export default function Login() {
                 </div>
               </form>
 
-              <div className="mt-8 rounded-xl bg-white/[0.02] p-3 border border-white/5 flex items-center justify-between text-xs text-slate-400">
+              <div className="mt-8 rounded-xl bg-[var(--bg-surface-soft)] p-3 border border-[var(--border-hairline)] flex items-center justify-between text-xs text-[var(--ink-muted)]">
                 <span>Want to register your cafe on VORA?</span>
                 <button
                   type="button"
@@ -335,8 +335,8 @@ export default function Login() {
           {!submitted && mode === 'register_cafe' && (
             <div>
               <div className="mb-4">
-                <h3 className="text-lg font-bold font-display text-white">Register Your Gaming Lounge</h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <h3 className="text-lg font-bold font-display text-[var(--ink-primary)]">Register Your Gaming Lounge</h3>
+                <p className="text-xs text-[var(--ink-muted)] mt-1">
                   Submit your cafe details for security verification. Once approved, login credentials will be issued.
                 </p>
               </div>
@@ -344,7 +344,7 @@ export default function Login() {
               <form onSubmit={handleSubmitRequest} className="space-y-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1 flex items-center gap-1.5">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1 flex items-center gap-1.5">
                       <Store className="h-3.5 w-3.5 text-[#D9184B]" /> Gaming Lounge Name *
                     </label>
                     <input
@@ -353,12 +353,12 @@ export default function Login() {
                       value={cafeName}
                       onChange={(e) => setCafeName(e.target.value)}
                       placeholder="e.g. CyberZone Lounge"
-                      className="w-full rounded-xl bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D9184B]"
+                      className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3 py-2 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B]"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1 flex items-center gap-1.5">
-                      <User className="h-3.5 w-3.5 text-slate-400" /> Owner / Manager Name *
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1 flex items-center gap-1.5">
+                      <User className="h-3.5 w-3.5 text-[var(--ink-muted)]" /> Owner / Manager Name *
                     </label>
                     <input
                       required
@@ -366,14 +366,14 @@ export default function Login() {
                       value={ownerName}
                       onChange={(e) => setOwnerName(e.target.value)}
                       placeholder="e.g. Alex Drake"
-                      className="w-full rounded-xl bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D9184B]"
+                      className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3 py-2 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1 flex items-center gap-1.5">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1 flex items-center gap-1.5">
                       <Mail className="h-3.5 w-3.5 text-[#D9184B]" /> Official Email *
                     </label>
                     <input
@@ -382,40 +382,40 @@ export default function Login() {
                       value={regEmail}
                       onChange={(e) => setRegEmail(e.target.value)}
                       placeholder="owner@cafe.com"
-                      className="w-full rounded-xl bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D9184B]"
+                      className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3 py-2 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B]"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1 flex items-center gap-1.5">
-                      <Phone className="h-3.5 w-3.5 text-slate-400" /> Contact Phone
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1 flex items-center gap-1.5">
+                      <Phone className="h-3.5 w-3.5 text-[var(--ink-muted)]" /> Contact Phone
                     </label>
                     <input
                       type="tel"
                       value={regPhone}
                       onChange={(e) => setRegPhone(e.target.value)}
                       placeholder="+91 9876543210"
-                      className="w-full rounded-xl bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D9184B]"
+                      className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3 py-2 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 mb-1 flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5 text-slate-400" /> City &amp; Lounge Address
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-secondary)] mb-1 flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5 text-[var(--ink-muted)]" /> City &amp; Lounge Address
                   </label>
                   <input
                     type="text"
                     value={regAddress}
                     onChange={(e) => setRegAddress(e.target.value)}
                     placeholder="e.g. Sector 18, Cyber Hub, Mumbai"
-                    className="w-full rounded-xl bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D9184B]"
+                    className="w-full rounded-xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] px-3 py-2 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-muted)] focus:outline-none focus:border-[#D9184B]"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 rounded-xl bg-white/[0.03] p-3 border border-white/10">
+                <div className="grid grid-cols-2 gap-3 rounded-xl bg-[var(--bg-surface-soft)] p-3 border border-[var(--border-hairline)]">
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-1 flex items-center gap-1">
-                      <Tv className="h-3 w-3 text-cyan-400" /> PS5 Stations
+                    <label className="text-[10px] text-[var(--ink-muted)] mb-1 flex items-center gap-1">
+                      <Tv className="h-3 w-3 text-cyan-600 dark:text-cyan-400" /> PS5 Stations
                     </label>
                     <input
                       type="number"
@@ -423,12 +423,12 @@ export default function Login() {
                       max="50"
                       value={stationCount}
                       onChange={(e) => setStationCount(e.target.value)}
-                      className="w-full rounded-lg bg-black/40 border border-white/10 px-2.5 py-1.5 text-xs text-white"
+                      className="w-full rounded-lg bg-[var(--bg-surface)] border border-[var(--border-hairline)] px-2.5 py-1.5 text-xs text-[var(--ink-primary)]"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-1 flex items-center gap-1">
-                      <Car className="h-3 w-3 text-orange-400" /> Racing Rigs
+                    <label className="text-[10px] text-[var(--ink-muted)] mb-1 flex items-center gap-1">
+                      <Car className="h-3 w-3 text-orange-600 dark:text-orange-400" /> Racing Rigs
                     </label>
                     <input
                       type="number"
@@ -436,7 +436,7 @@ export default function Login() {
                       max="20"
                       value={simulatorCount}
                       onChange={(e) => setSimulatorCount(e.target.value)}
-                      className="w-full rounded-lg bg-black/40 border border-white/10 px-2.5 py-1.5 text-xs text-white"
+                      className="w-full rounded-lg bg-[var(--bg-surface)] border border-[var(--border-hairline)] px-2.5 py-1.5 text-xs text-[var(--ink-primary)]"
                     />
                   </div>
                 </div>
@@ -457,7 +457,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setMode('signin')}
-                  className="text-xs text-slate-400 hover:text-white cursor-pointer"
+                  className="text-xs text-[var(--ink-muted)] hover:text-[var(--ink-primary)] cursor-pointer"
                 >
                   Already have an approved account? <span className="text-[#D9184B] font-bold">Sign In</span>
                 </button>
@@ -468,31 +468,31 @@ export default function Login() {
           {/* ===================== MODE 3: SUCCESS / PENDING VERIFICATION SCREEN ===================== */}
           {submitted && (
             <div className="text-center py-6 px-2 animate-in fade-in duration-300">
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 text-emerald-400 shadow-xl shadow-emerald-500/10">
+              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 shadow-xl shadow-emerald-500/10">
                 <FileCheck2 className="h-8 w-8 stroke-[2.2]" />
               </div>
 
-              <h3 className="text-xl font-bold font-display text-white mb-2">
+              <h3 className="text-xl font-bold font-display text-[var(--ink-primary)] mb-2">
                 Your Request Has Been Submitted!
               </h3>
 
-              <div className="max-w-md mx-auto my-4 rounded-2xl bg-white/[0.04] border border-white/10 p-4 text-left space-y-2.5">
-                <div className="flex items-center justify-between text-xs border-b border-white/5 pb-2">
-                  <span className="text-slate-400">Gaming Lounge:</span>
-                  <span className="font-bold text-white">{submittedCafe?.cafeName}</span>
+              <div className="max-w-md mx-auto my-4 rounded-2xl bg-[var(--bg-surface-soft)] border border-[var(--border-hairline)] p-4 text-left space-y-2.5">
+                <div className="flex items-center justify-between text-xs border-b border-[var(--border-hairline)] pb-2">
+                  <span className="text-[var(--ink-muted)]">Gaming Lounge:</span>
+                  <span className="font-bold text-[var(--ink-primary)]">{submittedCafe?.cafeName}</span>
                 </div>
-                <div className="flex items-center justify-between text-xs border-b border-white/5 pb-2">
-                  <span className="text-slate-400">Applicant:</span>
-                  <span className="font-bold text-white">{submittedCafe?.ownerName}</span>
+                <div className="flex items-center justify-between text-xs border-b border-[var(--border-hairline)] pb-2">
+                  <span className="text-[var(--ink-muted)]">Applicant:</span>
+                  <span className="font-bold text-[var(--ink-primary)]">{submittedCafe?.ownerName}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400">Notification Email:</span>
-                  <span className="font-bold text-cyan-400">{submittedCafe?.email}</span>
+                  <span className="text-[var(--ink-muted)]">Notification Email:</span>
+                  <span className="font-bold text-cyan-600 dark:text-cyan-400">{submittedCafe?.email}</span>
                 </div>
               </div>
 
-              <div className="max-w-md mx-auto rounded-xl bg-amber-500/10 border border-amber-500/20 p-3.5 text-xs text-amber-200/90 leading-relaxed text-left flex items-start gap-2.5 mb-6">
-                <Clock className="h-4 w-4 shrink-0 text-amber-400 mt-0.5" />
+              <div className="max-w-md mx-auto rounded-xl bg-amber-500/10 border border-amber-500/20 p-3.5 text-xs text-amber-700 dark:text-amber-200/90 leading-relaxed text-left flex items-start gap-2.5 mb-6">
+                <Clock className="h-4 w-4 shrink-0 text-amber-500 mt-0.5" />
                 <p>
                   Our security team is conducting a background check. Once approved, your <strong>Username and Master Password</strong> will be automatically delivered to your registered email address.
                 </p>
@@ -509,7 +509,7 @@ export default function Login() {
                   setRegPhone('')
                   setRegAddress('')
                 }}
-                className="inline-flex items-center gap-2 rounded-xl bg-white/10 hover:bg-white/15 px-6 py-2.5 text-xs font-bold text-white transition cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-xl bg-[var(--bg-surface-soft)] hover:bg-[var(--border-hairline)] px-6 py-2.5 text-xs font-bold text-[var(--ink-primary)] border border-[var(--border-hairline)] transition cursor-pointer"
               >
                 Return to Login Page
               </button>
