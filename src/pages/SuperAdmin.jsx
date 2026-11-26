@@ -347,28 +347,28 @@ Support: support@ameroids.com`
     <div className="min-h-screen bg-[var(--bg-canvas)] text-[var(--ink-primary)] flex flex-col font-sans selection:bg-[var(--crimson)] selection:text-white transition-colors duration-200">
 
       {/* Top Super Admin Global Header */}
-      <header className="sticky top-0 z-50 bg-[var(--bg-surface)]/95 border-b border-[var(--border-hairline)] backdrop-blur-md px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-3.5">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[var(--crimson)] to-[var(--wine)] p-1.5 flex items-center justify-center shadow-lg shadow-[var(--crimson-glow)]">
+      <header className="sticky top-0 z-50 bg-[var(--bg-surface)]/95 border-b border-[var(--border-hairline)] backdrop-blur-md px-3 sm:px-8 py-3 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-2 sm:gap-3.5 min-w-0">
+          <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-gradient-to-br from-[var(--crimson)] to-[var(--wine)] p-1.5 flex items-center justify-center shadow-lg shadow-[var(--crimson-glow)] shrink-0">
             <img src={VORA_LOGO} alt="VORA" className="w-full h-full object-contain rounded-lg" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-display font-black text-lg text-[var(--ink-primary)] tracking-tight">VORA OS</span>
-              <span className="rounded-full bg-[var(--crimson)]/20 px-2 py-0.5 text-[9px] font-black text-[var(--crimson)] border border-[var(--crimson)]/30 uppercase tracking-wider">
-                Super Admin Master Deck
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="font-display font-black text-base sm:text-lg text-[var(--ink-primary)] tracking-tight">VORA OS</span>
+              <span className="rounded-full bg-[var(--crimson)]/20 px-1.5 sm:px-2 py-0.5 text-[8px] sm:text-[9px] font-black text-[var(--crimson)] border border-[var(--crimson)]/30 uppercase tracking-wider truncate">
+                Super Admin
               </span>
             </div>
-            <p className="text-[10px] text-[var(--ink-muted)]">Platform Management, Cafe Approvals &amp; Cross-Network Reports</p>
+            <p className="text-[9px] sm:text-[10px] text-[var(--ink-muted)] truncate hidden xs:block">Platform Management &amp; Approvals</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           {/* Light Mode / Gaming Mode toggle button */}
           <button
             onClick={toggleTheme}
             className={cx(
-              'flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition border cursor-pointer',
+              'flex items-center gap-1.5 rounded-xl px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs font-bold transition border cursor-pointer',
               isGaming
                 ? 'bg-[var(--bg-surface-soft)] text-amber-400 border-[var(--border-hairline)] hover:border-amber-400/50'
                 : 'bg-white text-slate-700 border-slate-200 shadow-sm hover:border-[var(--crimson)]'
@@ -388,23 +388,24 @@ Support: support@ameroids.com`
             )}
           </button>
 
-          <div className="hidden sm:flex flex-col text-right">
+          <div className="hidden md:flex flex-col text-right">
             <span className="text-xs font-bold text-[var(--ink-primary)]">{profile?.full_name || 'Master SuperAdmin'}</span>
             <span className="text-[10px] text-emerald-500 font-mono">Platform Overseer</span>
           </div>
 
           <button
             onClick={signOut}
-            className="flex items-center gap-1.5 rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface-soft)] hover:bg-rose-500/20 hover:border-rose-500/30 hover:text-rose-400 px-3 py-1.5 text-xs font-bold text-[var(--ink-muted)] transition cursor-pointer"
+            className="flex items-center gap-1 rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface-soft)] hover:bg-rose-500/20 hover:border-rose-500/30 hover:text-rose-400 px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs font-bold text-[var(--ink-muted)] transition cursor-pointer"
             title="Sign Out of Super Admin"
           >
-            <LogOut className="h-3.5 w-3.5" /> Sign Out
+            <LogOut className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Sign Out</span>
           </button>
         </div>
       </header>
 
       {/* Main Body */}
-      <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-8 space-y-6">
+      <div className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-8 space-y-4 sm:space-y-6">
 
         {/* Navigation Tabs */}
         <div className="flex items-center justify-between border-b border-[var(--border-hairline)] pb-4">
