@@ -49,7 +49,7 @@ export function DataProvider({ children }) {
       const t1 = Date.now()
       offset.current = new Date(serverTime).getTime() - (t0 + t1) / 2
       setNow(Date.now() + offset.current)
-      
+
       // Deduplicate stations by normalized name to prevent duplicate cards
       const rawStations = Array.isArray(st.data) ? st.data : []
       const seenNames = new Set()
@@ -80,8 +80,8 @@ export function DataProvider({ children }) {
     if (!profile?.active) return
     load()
     const ch = supabase.channel('pp-live')
-    ;['gaming_sessions', 'gaming_stations', 'pricing_rules', 'discounts', 'settings'].forEach((t) =>
-      ch.on('postgres_changes', { event: '*', schema: 'public', table: t }, debounced))
+      ;['gaming_sessions', 'gaming_stations', 'pricing_rules', 'discounts', 'settings'].forEach((t) =>
+        ch.on('postgres_changes', { event: '*', schema: 'public', table: t }, debounced))
     ch.subscribe()
     const poll = setInterval(load, 30000)
     const tick = setInterval(() => setNow(Date.now() + offset.current), 1000)

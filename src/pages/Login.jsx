@@ -22,6 +22,15 @@ export default function Login({ initialMode = 'signin', onBackToLanding }) {
   
   // View states: 'seat' (VORA Lounge Seat Login) | 'register_cafe'
   const [viewMode, setViewMode] = useState(initialMode === 'register_cafe' ? 'register_cafe' : 'seat')
+
+  // Keep viewMode in sync if parent initialMode changes
+  useEffect(() => {
+    if (initialMode === 'register_cafe') {
+      setViewMode('register_cafe')
+    } else if (initialMode === 'signin') {
+      setViewMode('seat')
+    }
+  }, [initialMode])
   
   // Seat Login internal states
   const [seatView, setSeatView] = useState('login') // 'login' | 'boot' | 'ok'
@@ -70,11 +79,12 @@ export default function Login({ initialMode = 'signin', onBackToLanding }) {
 
   // 2. Responsive Fit Calculation
   useEffect(() => {
+    if (viewMode !== 'seat') return
     const fit = () => {
       if (!stageRef.current) return
-      const h = stageRef.current.offsetHeight + 40
-      const s = Math.min(1, (window.innerHeight - 16) / h, (window.innerWidth - 16) / 470)
-      stageRef.current.style.transform = `translate(-50%,-50%) scale(${s})`
+      const h = stageRef.current.offsetHeight || 574
+      const s = Math.min(1, (window.innerHeight - 32) / (h + 40), (window.innerWidth - 32) / 470)
+      stageRef.current.style.transform = `translate(-50%,-50%) scale(${Math.max(0.55, s)})`
     }
     fit()
     window.addEventListener('resize', fit)
@@ -411,7 +421,7 @@ export default function Login({ initialMode = 'signin', onBackToLanding }) {
   }
 
   return (
-    <div className="seat-login-root">
+    <div className={`seat-login-root ${viewMode === 'register_cafe' ? 'flex items-center justify-center p-4 sm:p-6 overflow-y-auto' : ''}`}>
       
       {/* Top Header Floating Controls */}
       <div className="absolute top-4 left-4 right-4 z-40 flex items-center justify-between pointer-events-auto">
@@ -419,7 +429,7 @@ export default function Login({ initialMode = 'signin', onBackToLanding }) {
           <button
             type="button"
             onClick={onBackToLanding}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#2a1b20] text-[#ffd3df] border border-[var(--cr)]/40 text-xs font-bold font-mono tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#2a1b20] text-[#ffd3df] border border-[var(--cr)]/40 text-xs font-bold font-mono tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
           >
             <ArrowLeft className="h-3.5 w-3.5 text-[var(--cr)]" />
             <span>WEBSITE</span>
@@ -431,7 +441,7 @@ export default function Login({ initialMode = 'signin', onBackToLanding }) {
           onClick={() => {
             setViewMode(prev => prev === 'seat' ? 'register_cafe' : 'seat')
           }}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#2a1b20] text-[#ffd3df] border border-[var(--cr)]/40 text-xs font-bold font-mono tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#2a1b20] text-[#ffd3df] border border-[var(--cr)]/40 text-xs font-bold font-mono tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
         >
           <Store className="h-3.5 w-3.5 text-[var(--cr)]" />
           <span>{viewMode === 'seat' ? 'REGISTER CAFE' : 'SEAT LOGIN'}</span>
@@ -595,152 +605,188 @@ export default function Login({ initialMode = 'signin', onBackToLanding }) {
 
       {/* ===================== 2. REGISTER CAFE MODAL ===================== */}
       {viewMode === 'register_cafe' && (
-        <div className="relative z-30 max-w-xl w-full mx-auto p-6 sm:p-8 bg-[#2a1b20]/95 border border-[var(--cr)]/40 rounded-3xl shadow-2xl backdrop-blur-xl text-[#ffd3df] font-sans my-auto animate-in fade-in duration-300">
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-[var(--cr)]/20">
-            <div className="flex items-center gap-2.5">
-              <Store className="h-5 w-5 text-[var(--cr)]" />
-              <h2 className="font-display font-black text-xl text-white">Register Gaming Lounge</h2>
+        <div className="relative z-30 max-w-2xl w-full mx-auto px-4 my-auto animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[#18141b]/95 border border-[var(--cr)]/35 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-2xl text-slate-100 font-sans relative overflow-hidden ring-1 ring-white/10">
+            
+            {/* Ambient Background Accent */}
+            <div className="absolute -top-24 -right-24 w-60 h-60 bg-[var(--cr)]/20 rounded-full blur-[80px] pointer-events-none" />
+            <div className="absolute -bottom-24 -left-24 w-60 h-60 bg-indigo-500/15 rounded-full blur-[80px] pointer-events-none" />
+
+            {/* Modal Header */}
+            <div className="flex items-start justify-between pb-6 mb-6 border-b border-white/10 relative z-10">
+              <div className="flex items-center gap-3.5">
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[var(--cr)] to-[#ff4d6d] p-2.5 flex items-center justify-center shadow-lg shadow-[var(--cr)]/30 ring-1 ring-white/20">
+                  <Store className="h-full w-full text-white" />
+                </div>
+                <div>
+                  <h2 className="font-display font-black text-2xl text-white tracking-tight">Register Gaming Lounge</h2>
+                  <p className="text-xs text-slate-400 mt-0.5 font-medium">
+                    Submit your arena details for security vetting &amp; instant credential issuance.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setViewMode('seat')}
+                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition border border-white/5 cursor-pointer"
+                title="Close"
+              >
+                <X className="h-5 w-5" />
+              </button>
             </div>
-            <button
-              onClick={() => setViewMode('seat')}
-              className="p-1.5 rounded-full hover:bg-white/10 text-[#ffd3df] transition"
-            >
-              <X className="h-5 w-5" />
-            </button>
+
+            {!submitted ? (
+              <form onSubmit={handleSubmitCafe} className="space-y-4 relative z-10">
+                {regErr && (
+                  <div className="p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-semibold flex items-center gap-2">
+                    <span>⚠️</span>
+                    <span>{regErr}</span>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 block mb-1.5 flex items-center gap-1.5">
+                      <Store className="h-3.5 w-3.5 text-[var(--cr)]" /> Lounge Name *
+                    </label>
+                    <input
+                      required
+                      type="text"
+                      value={cafeName}
+                      onChange={(e) => setCafeName(e.target.value)}
+                      placeholder="e.g. CyberZone Arena"
+                      className="w-full bg-[#0d0a0f] border border-white/15 focus:border-[var(--cr)] focus:ring-1 focus:ring-[var(--cr)] rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 transition outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 block mb-1.5 flex items-center gap-1.5">
+                      <User className="h-3.5 w-3.5 text-slate-400" /> Owner / Manager *
+                    </label>
+                    <input
+                      required
+                      type="text"
+                      value={ownerName}
+                      onChange={(e) => setOwnerName(e.target.value)}
+                      placeholder="e.g. Alex Drake"
+                      className="w-full bg-[#0d0a0f] border border-white/15 focus:border-[var(--cr)] focus:ring-1 focus:ring-[var(--cr)] rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 transition outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 block mb-1.5 flex items-center gap-1.5">
+                      <Mail className="h-3.5 w-3.5 text-[var(--cr)]" /> Official Email *
+                    </label>
+                    <input
+                      required
+                      type="email"
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      placeholder="owner@gamingarena.com"
+                      className="w-full bg-[#0d0a0f] border border-white/15 focus:border-[var(--cr)] focus:ring-1 focus:ring-[var(--cr)] rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 transition outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 block mb-1.5 flex items-center gap-1.5">
+                      <Phone className="h-3.5 w-3.5 text-slate-400" /> Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      value={regPhone}
+                      onChange={(e) => setRegPhone(e.target.value)}
+                      placeholder="+91 98765 43210"
+                      className="w-full bg-[#0d0a0f] border border-white/15 focus:border-[var(--cr)] focus:ring-1 focus:ring-[var(--cr)] rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 transition outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 block mb-1.5 flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5 text-slate-400" /> City &amp; Full Address
+                  </label>
+                  <input
+                    type="text"
+                    value={regAddress}
+                    onChange={(e) => setRegAddress(e.target.value)}
+                    placeholder="e.g. Sector 18, Cyber Hub, Mumbai"
+                    className="w-full bg-[#0d0a0f] border border-white/15 focus:border-[var(--cr)] focus:ring-1 focus:ring-[var(--cr)] rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 transition outline-none"
+                  />
+                </div>
+
+                {/* Capacity Counter Cards */}
+                <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/10">
+                  <div>
+                    <label className="text-xs font-bold text-cyan-400 mb-1.5 flex items-center gap-1.5">
+                      <Tv className="h-4 w-4" /> PS5 Stations
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="50"
+                      value={stationCount}
+                      onChange={(e) => setStationCount(e.target.value)}
+                      className="w-full bg-[#0d0a0f] border border-white/15 focus:border-cyan-400 rounded-xl px-3.5 py-2 text-sm font-mono font-bold text-white outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-amber-400 mb-1.5 flex items-center gap-1.5">
+                      <Car className="h-4 w-4" /> Racing Rigs
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      value={simulatorCount}
+                      onChange={(e) => setSimulatorCount(e.target.value)}
+                      className="w-full bg-[#0d0a0f] border border-white/15 focus:border-amber-400 rounded-xl px-3.5 py-2 text-sm font-mono font-bold text-white outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Submit Action */}
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={busy}
+                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[var(--cr)] via-[#ff2f68] to-[#73142D] hover:opacity-95 text-white font-bold text-sm tracking-wide shadow-xl shadow-[var(--cr)]/30 hover:scale-[1.01] active:scale-[0.99] transition disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span>{busy ? 'SUBMITTING APPLICATION...' : 'SUBMIT REGISTRATION APPLICATION'}</span>
+                    <Send className="h-4 w-4" />
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="text-center py-8 space-y-4 relative z-10">
+                <div className="w-16 h-16 mx-auto rounded-3xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                  <FileCheck2 className="h-8 w-8" />
+                </div>
+                <h3 className="font-display font-black text-2xl text-white">Application Received!</h3>
+                <div className="max-w-md mx-auto p-4 rounded-2xl bg-white/[0.04] border border-white/10 text-left text-xs space-y-2">
+                  <div className="flex justify-between border-b border-white/5 pb-1.5">
+                    <span className="text-slate-400">Lounge:</span>
+                    <span className="font-bold text-white">{submittedCafe?.cafeName}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-white/5 pb-1.5">
+                    <span className="text-slate-400">Applicant:</span>
+                    <span className="font-bold text-white">{submittedCafe?.ownerName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Confirmation Sent To:</span>
+                    <span className="font-bold text-cyan-400">{submittedCafe?.email}</span>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
+                  Our verification team is reviewing your registration. Your operator credentials will be dispatched to your email address shortly.
+                </p>
+                <button
+                  onClick={() => { setSubmitted(false); setViewMode('seat'); }}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[var(--cr)] to-[#ff4d6d] text-white text-xs font-bold tracking-wide shadow-lg shadow-[var(--cr)]/20"
+                >
+                  RETURN TO SEAT LOGIN
+                </button>
+              </div>
+            )}
           </div>
-
-          {!submitted ? (
-            <form onSubmit={handleSubmitCafe} className="space-y-4">
-              {regErr && (
-                <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-200 text-xs font-mono">
-                  {regErr}
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-[10px] font-mono uppercase text-[#ff8fb0] font-bold block mb-1">
-                    Lounge Name *
-                  </label>
-                  <input
-                    required
-                    type="text"
-                    value={cafeName}
-                    onChange={(e) => setCafeName(e.target.value)}
-                    placeholder="CyberZone Arena"
-                    className="w-full bg-[#181013] border border-[var(--cr)]/30 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--cr)]"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-mono uppercase text-[#ff8fb0] font-bold block mb-1">
-                    Owner / Manager *
-                  </label>
-                  <input
-                    required
-                    type="text"
-                    value={ownerName}
-                    onChange={(e) => setOwnerName(e.target.value)}
-                    placeholder="Alex Drake"
-                    className="w-full bg-[#181013] border border-[var(--cr)]/30 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--cr)]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-[10px] font-mono uppercase text-[#ff8fb0] font-bold block mb-1">
-                    Official Email *
-                  </label>
-                  <input
-                    required
-                    type="email"
-                    value={regEmail}
-                    onChange={(e) => setRegEmail(e.target.value)}
-                    placeholder="owner@cyberzone.com"
-                    className="w-full bg-[#181013] border border-[var(--cr)]/30 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--cr)]"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-mono uppercase text-[#ff8fb0] font-bold block mb-1">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={regPhone}
-                    onChange={(e) => setRegPhone(e.target.value)}
-                    placeholder="+91 98765 43210"
-                    className="w-full bg-[#181013] border border-[var(--cr)]/30 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--cr)]"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-[10px] font-mono uppercase text-[#ff8fb0] font-bold block mb-1">
-                  City &amp; Full Address
-                </label>
-                <input
-                  type="text"
-                  value={regAddress}
-                  onChange={(e) => setRegAddress(e.target.value)}
-                  placeholder="Sector 18, Cyber Hub, Mumbai"
-                  className="w-full bg-[#181013] border border-[var(--cr)]/30 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--cr)]"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 p-3 rounded-xl bg-[#181013] border border-[var(--cr)]/20">
-                <div>
-                  <label className="text-[10px] font-mono text-cyan-400 block mb-1">
-                    PS5 Stations
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="50"
-                    value={stationCount}
-                    onChange={(e) => setStationCount(e.target.value)}
-                    className="w-full bg-[#2a1b20] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-mono text-amber-400 block mb-1">
-                    Racing Rigs
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="20"
-                    value={simulatorCount}
-                    onChange={(e) => setSimulatorCount(e.target.value)}
-                    className="w-full bg-[#2a1b20] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={busy}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-[var(--cr)] to-[#ff4d6d] text-white font-mono font-bold text-xs tracking-widest shadow-lg shadow-[var(--cr)]/30 hover:scale-[1.01] active:scale-[0.99] transition disabled:opacity-50 cursor-pointer"
-              >
-                {busy ? 'SUBMITTING REQUEST...' : 'SUBMIT REGISTRATION APPLICATION'}
-              </button>
-            </form>
-          ) : (
-            <div className="text-center py-6 space-y-4">
-              <div className="w-14 h-14 mx-auto rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center">
-                <FileCheck2 className="h-7 w-7" />
-              </div>
-              <h3 className="font-bold text-lg text-white">Application Received!</h3>
-              <p className="text-xs text-slate-300 max-w-sm mx-auto leading-relaxed">
-                Our verification team is reviewing <strong>{submittedCafe?.cafeName}</strong>. Once confirmed, login credentials will be delivered to <strong>{submittedCafe?.email}</strong>.
-              </p>
-              <button
-                onClick={() => { setSubmitted(false); setViewMode('seat'); }}
-                className="px-6 py-2 rounded-xl bg-[var(--cr)] text-white text-xs font-mono font-bold tracking-wider"
-              >
-                RETURN TO SEAT LOGIN
-              </button>
-            </div>
-          )}
         </div>
       )}
 

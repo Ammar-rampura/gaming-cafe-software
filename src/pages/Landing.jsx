@@ -1,18 +1,15 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   Gamepad2, 
   Car, 
   ShieldCheck, 
   Zap, 
-  TrendingUp, 
-  Layers, 
   Clock, 
   Users, 
   CheckCircle2, 
   ArrowRight, 
   Sparkles, 
   ChevronRight, 
-  Play, 
   Monitor, 
   BarChart3, 
   Lock, 
@@ -21,686 +18,427 @@ import {
   Cpu,
   Flame,
   Sun,
-  X,
   Store,
   ChevronDown,
-  Globe2,
-  Terminal,
   Volume2,
   VolumeX,
-  Radio,
+  Play,
+  Pause,
+  Sliders,
+  DollarSign,
   Activity,
-  Layers3,
-  DollarSign
+  Layers,
+  ArrowUpRight,
+  ShieldAlert,
+  Smartphone,
+  ChevronUp
 } from 'lucide-react'
 import { VORA_LOGO } from '../lib/logoData'
 import { useTheme } from '../context/ThemeContext'
-import { cx } from '../components/ui'
 
-let globalAudioInstance = null
-
-function playCyberGreetingSound() {
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext
-    if (!AudioCtx) return
-    const ctx = new AudioCtx()
-    if (ctx.state === 'suspended') {
-      ctx.resume()
-    }
-
-    const now = ctx.currentTime
-
-    // 1. Deep Sub Bass Sweep
-    const subOsc = ctx.createOscillator()
-    const subGain = ctx.createGain()
-    subOsc.type = 'sine'
-    subOsc.frequency.setValueAtTime(65, now)
-    subOsc.frequency.exponentialRampToValueAtTime(140, now + 0.35)
-    subOsc.frequency.exponentialRampToValueAtTime(45, now + 1.2)
-
-    subGain.gain.setValueAtTime(0.01, now)
-    subGain.gain.linearRampToValueAtTime(0.25, now + 0.1)
-    subGain.gain.exponentialRampToValueAtTime(0.001, now + 1.2)
-
-    subOsc.connect(subGain)
-    subGain.connect(ctx.destination)
-    subOsc.start(now)
-    subOsc.stop(now + 1.25)
-
-    // 2. Dual Futuristic Harmonics (Chime / Boot Sound)
-    const freqs = [523.25, 659.25, 783.99, 1046.50]
-    freqs.forEach((freq, idx) => {
-      const osc = ctx.createOscillator()
-      const gain = ctx.createGain()
-      osc.type = 'triangle'
-      osc.frequency.setValueAtTime(freq, now + 0.15 + idx * 0.08)
-
-      gain.gain.setValueAtTime(0.001, now + 0.15 + idx * 0.08)
-      gain.gain.linearRampToValueAtTime(0.12, now + 0.2 + idx * 0.08)
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.6 + idx * 0.08)
-
-      osc.connect(gain)
-      gain.connect(ctx.destination)
-      osc.start(now + 0.15 + idx * 0.08)
-      osc.stop(now + 1.7 + idx * 0.08)
-    })
-  } catch (e) {
-    console.error('Audio synthesizer error:', e)
-  }
-}
-
-// Audio player for custom ElevenLabs voice greeting - ensures strictly ONE audio plays at any time
-function playWelcomeVoiceAudio(onEndedCallback) {
-  try {
-    if (globalAudioInstance) {
-      globalAudioInstance.pause()
-      globalAudioInstance.currentTime = 0
-    }
-    const audio = new Audio('/welcome-vora.mp3')
-    audio.volume = 1.0
-    globalAudioInstance = audio
-
-    if (onEndedCallback) {
-      audio.onended = onEndedCallback
-    }
-
-    const playPromise = audio.play()
-    if (playPromise !== undefined) {
-      playPromise.catch(err => {
-        console.warn('Audio autoplay blocked by browser policy:', err)
-      })
-    }
-    return audio
-  } catch (err) {
-    console.warn('Audio playback error:', err)
-    return null
-  }
-}
-
-export default function LandingPage({ onOpenLogin, onOpenRegister }) {
+export default function LuxuryLanding({ onOpenLogin, onOpenRegister }) {
   const { isGaming, toggleTheme } = useTheme()
   const [activeTab, setActiveTab] = useState('stations')
-  const [ticker, setTicker] = useState(14)
-  const [faqOpen, setFaqOpen] = useState(null)
-  
-  // Assembling / Building Animation State
-  const [isBuilding, setIsBuilding] = useState(true)
-  const [buildProgress, setBuildProgress] = useState(0)
-  const [buildStep, setBuildStep] = useState('INITIALIZING VORA CORE')
-  const hasTriggeredRef = useRef(false)
+  const [activeFaq, setActiveFaq] = useState(null)
 
-  // Interactive Simulator Calculator State
-  const [calcPlayers, setCalcPlayers] = useState(2)
-  const [calcMinutes, setCalcMinutes] = useState(60)
-  const [calcRatePerHr, setCalcRatePerHr] = useState(200)
+  // Interactive Live Simulator State
+  const [simHours, setSimHours] = useState(2)
+  const [simStations, setSimStations] = useState(8)
+  const [simHourlyRate, setSimHourlyRate] = useState(180)
+  const [simSnacksAvg, setSimSnacksAvg] = useState(90)
 
-  // 3D Tilt state for hero cockpit
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-
-  // Trigger greeting sound & audio strictly ONCE
-  const startBuildingSequence = () => {
-    if (hasTriggeredRef.current) return
-    hasTriggeredRef.current = true
-
-    playCyberGreetingSound()
-    
-    // Play voice after slight chime pause
-    setTimeout(() => {
-      playWelcomeVoiceAudio(() => {
-        // When audio ends:
-        setBuildProgress(100)
-        setBuildStep('VORA OPERATIONS SYSTEM ONLINE')
-        setTimeout(() => {
-          setIsBuilding(false)
-        }, 600)
-      })
-    }, 250)
-
-    // Gradual assembly progress synchronized across 3.8s
-    const steps = [
-      { p: 15, msg: 'LINKING TELEMETRY BUS' },
-      { p: 35, msg: 'ASSEMBLING HIGH-PRECISION TIMERS' },
-      { p: 58, msg: 'MOUNTING LIVE STATION PODS' },
-      { p: 78, msg: 'SYNCING DUAL-MODE OPERATIONAL MATRIX' },
-      { p: 92, msg: 'ESTABLISHING ZERO-DRIFT SATELLITE' },
-      { p: 100, msg: 'SYSTEM READY' }
-    ]
-
-    steps.forEach((s, idx) => {
-      setTimeout(() => {
-        setBuildProgress(prev => Math.max(prev, s.p))
-        setBuildStep(s.msg)
-      }, 500 + idx * 550)
-    })
-
-    // Safety fallback: if audio fails to play or load, complete animation after 4s
-    setTimeout(() => {
-      setIsBuilding(false)
-    }, 4200)
-  }
-
+  // Ticking match duration simulator
+  const [matchSeconds, setMatchSeconds] = useState(4820)
   useEffect(() => {
-    // Attempt auto-start
-    startBuildingSequence()
-
-    // If blocked by browser autoplay, first user gesture starts it cleanly once
-    const handleGesture = () => {
-      if (!hasTriggeredRef.current) {
-        startBuildingSequence()
-      }
-      window.removeEventListener('pointerdown', handleGesture)
-      window.removeEventListener('keydown', handleGesture)
-    }
-
-    window.addEventListener('pointerdown', handleGesture, { once: true })
-    window.addEventListener('keydown', handleGesture, { once: true })
-
-    return () => {
-      window.removeEventListener('pointerdown', handleGesture)
-      window.removeEventListener('keydown', handleGesture)
-      if (globalAudioInstance) {
-        globalAudioInstance.pause()
-      }
-    }
+    const t = setInterval(() => setMatchSeconds(s => s + 1), 1000)
+    return () => clearInterval(t)
   }, [])
 
-  // Live station ticker cycle
-  useEffect(() => {
-    const int = setInterval(() => {
-      setTicker(prev => (prev >= 28 ? 12 : prev + 1))
-    }, 4000)
-    return () => clearInterval(int)
-  }, [])
-
-  const handleMouseMove = (e) => {
-    const { clientX, clientY } = e
-    const { innerWidth, innerHeight } = window
-    const x = (clientX / innerWidth - 0.5) * 15 // degrees
-    const y = (clientY / innerHeight - 0.5) * -15
-    setMousePos({ x, y })
+  const formatTimer = (sec) => {
+    const h = Math.floor(sec / 3600)
+    const m = Math.floor((sec % 3600) / 60)
+    const s = sec % 60
+    return `${('0' + h).slice(-2)}:${('0' + m).slice(-2)}:${('0' + s).slice(-2)}`
   }
 
-  // Calculate simulated billing
-  const calcTotal = Math.round((calcMinutes / 60) * calcRatePerHr * calcPlayers)
+  // Calculations
+  const dailyGameRevenue = simStations * simHours * simHourlyRate
+  const dailySnacksRevenue = simStations * 1.5 * simSnacksAvg
+  const monthlyProjected = Math.round((dailyGameRevenue + dailySnacksRevenue) * 30)
 
   return (
-    <div 
-      onMouseMove={handleMouseMove}
-      className="min-h-screen bg-[var(--bg-canvas)] text-[var(--ink-primary)] font-sans selection:bg-[var(--crimson)] selection:text-white transition-colors duration-300 overflow-x-hidden relative"
-    >
-      {/* Construction / Assembly Hologram Overlay while Audio Plays */}
-      {isBuilding && (
-        <div className="fixed inset-0 z-50 pointer-events-none flex flex-col justify-between p-6 sm:p-12 bg-[var(--bg-canvas)]/80 backdrop-blur-md transition-opacity duration-700 animate-in fade-in">
-          {/* Top HUD */}
-          <div className="flex items-center justify-between font-mono text-xs text-[var(--crimson)]">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[var(--crimson)] animate-ping" />
-              <span className="font-bold tracking-widest uppercase">CONSTRUCTING VORA MATRIX</span>
-            </div>
-            <div className="border border-[var(--crimson)]/30 px-3 py-1 rounded bg-[var(--crimson)]/10 font-bold">
-              BUILD: {Math.round(buildProgress)}%
-            </div>
-          </div>
+    <div className={`min-h-screen font-sans selection:bg-[#D9184B] selection:text-white transition-colors duration-500 overflow-x-hidden ${
+      isGaming ? 'bg-[#0a0a0d] text-[#f4f4f7]' : 'bg-[#fafafc] text-[#16161a]'
+    }`}>
 
-          {/* Center Hologram Blueprint Grid */}
-          <div className="max-w-xl mx-auto w-full text-center py-10 space-y-4">
-            <div className="relative inline-block">
-              <div className="w-24 h-24 mx-auto rounded-3xl bg-[var(--crimson)]/10 border-2 border-[var(--crimson)] flex items-center justify-center p-4 shadow-2xl shadow-[var(--crimson)]/40 relative">
-                <img src={VORA_LOGO} alt="VORA" className="w-full h-full object-contain filter drop-shadow animate-pulse" />
-                <div className="absolute -inset-2 border border-dashed border-[var(--crimson)]/50 rounded-3xl animate-spin" style={{ animationDuration: '8s' }} />
-              </div>
-            </div>
-
-            <div className="font-display font-black text-2xl sm:text-3xl tracking-widest text-[var(--ink-primary)]">
-              ASSEMBLING VORA OS
-            </div>
-
-            <p className="font-mono text-xs tracking-wider text-[var(--crimson)] font-bold animate-pulse">
-              &gt; {buildStep} ...
-            </p>
-
-            {/* Glowing Construction Progress Bar */}
-            <div className="w-full max-w-md mx-auto bg-slate-200 dark:bg-zinc-800/80 h-2.5 rounded-full overflow-hidden p-0.5 border border-[var(--border-subtle)] mt-4">
-              <div 
-                className="bg-gradient-to-r from-[var(--crimson)] via-amber-500 to-emerald-400 h-full rounded-full transition-all duration-300 shadow-lg shadow-[var(--crimson)]/50" 
-                style={{ width: `${buildProgress}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Bottom HUD Coordinates */}
-          <div className="flex items-center justify-between font-mono text-[11px] text-[var(--ink-secondary)]">
-            <span>SYNC: ZERO-DRIFT POSIX</span>
-            <span>AUDIO STREAM: ELEVENLABS HI-FI</span>
-            <button 
-              onClick={() => setIsBuilding(false)} 
-              className="pointer-events-auto text-[var(--crimson)] underline font-bold hover:text-white"
-            >
-              Skip Intro &gt;&gt;
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Voice / Audio Announcement Floating Trigger */}
-      <div className="fixed bottom-6 right-6 z-40 flex items-center gap-3">
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            hasTriggeredRef.current = false
-            setIsBuilding(true)
-            setBuildProgress(0)
-            startBuildingSequence()
-          }}
-          title="Play voice greeting and assembly animation again"
-          className="group flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[var(--crimson)] text-white text-xs font-bold shadow-lg shadow-[var(--crimson)]/30 hover:scale-105 active:scale-95 transition-all"
-        >
-          <Volume2 className="h-4 w-4 animate-bounce" />
-          <span>Play Voice Greeting</span>
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-        </button>
-      </div>
-
-      {/* Cyber Grid & Glow Ambience */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[650px] bg-gradient-to-b from-[var(--crimson)]/20 via-[var(--crimson)]/5 to-transparent blur-[140px] opacity-75 rounded-full" />
-        <div className="absolute top-[40%] right-[-10%] w-[600px] h-[600px] bg-cyan-500/10 blur-[130px] rounded-full" />
-        <div className="absolute top-[75%] left-[-10%] w-[600px] h-[600px] bg-fuchsia-500/10 blur-[130px] rounded-full" />
-        {/* Subtle grid pattern */}
-        <div 
-          className="absolute inset-0 opacity-[0.03] dark:opacity-[0.07]" 
-          style={{ backgroundImage: `radial-gradient(circle, currentColor 1px, transparent 1px)`, backgroundSize: '32px 32px' }}
-        />
-      </div>
-
-      {/* Top Banner Ticker */}
-      <div className="relative z-40 bg-[var(--bg-surface)] border-b border-[var(--border-subtle)] text-[11px] font-mono tracking-wider py-1.5 px-4 flex items-center justify-between overflow-hidden">
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 text-emerald-500 font-semibold">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            VORA NETWORK ONLINE
-          </span>
-          <span className="text-[var(--ink-secondary)] hidden md:inline">|</span>
-          <span className="text-[var(--ink-secondary)] hidden md:inline">
-            Active Lounges: <strong className="text-[var(--ink-primary)]">{ticker} Centers</strong>
-          </span>
-          <span className="text-[var(--ink-secondary)] hidden lg:inline">|</span>
-          <span className="text-[var(--ink-secondary)] hidden lg:inline">
-            Telemetry Drift: <strong className="text-emerald-500">&plusmn;0.00s</strong>
-          </span>
-        </div>
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={toggleTheme}
-            className="flex items-center gap-1.5 text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors px-2 py-0.5 rounded border border-[var(--border-subtle)] bg-[var(--bg-canvas)]"
-          >
-            {isGaming ? <Sun className="h-3 w-3 text-amber-400" /> : <Flame className="h-3 w-3 text-[var(--crimson)]" />}
-            <span className="capitalize">{isGaming ? 'Light Mode' : 'Gaming Mode'}</span>
-          </button>
-          <span className="text-[var(--ink-secondary)]">v2.4.0 Engine</span>
-        </div>
-      </div>
-
-      {/* Header / Nav */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-[var(--bg-canvas)]/85 border-b border-[var(--border-subtle)] transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      {/* Minimalist Glass Header */}
+      <header className={`sticky top-0 z-40 backdrop-blur-2xl border-b transition-colors ${
+        isGaming ? 'bg-[#0a0a0d]/75 border-white/5' : 'bg-white/70 border-black/5'
+      }`}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
           
-          {/* Brand */}
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[var(--crimson)] to-[#ff4d6d] p-2 flex items-center justify-center shadow-lg shadow-[var(--crimson)]/20 ring-1 ring-white/20">
+          {/* Logo & Product Name */}
+          <div className="flex items-center gap-3 cursor-pointer">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#D9184B] to-[#ff4d6d] p-2 flex items-center justify-center shadow-lg shadow-[#D9184B]/20">
               <img src={VORA_LOGO} alt="VORA" className="w-full h-full object-contain filter drop-shadow" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-display font-black text-2xl tracking-wider text-[var(--ink-primary)]">VORA</span>
-                <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full bg-[var(--crimson)]/10 text-[var(--crimson)] border border-[var(--crimson)]/20">
+                <span className="font-display font-black text-xl tracking-tight">VORA</span>
+                <span className="text-[10px] font-mono tracking-widest px-2 py-0.5 rounded-full bg-[#D9184B]/10 text-[#D9184B] border border-[#D9184B]/20 font-bold uppercase">
                   OS 2.0
                 </span>
               </div>
-              <p className="text-[10px] text-[var(--ink-secondary)] font-mono uppercase tracking-widest -mt-1 hidden sm:block">
-                Gaming Lounge Operations Engine
-              </p>
             </div>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[var(--ink-secondary)]">
-            <a href="#cockpit" className="hover:text-[var(--ink-primary)] transition-colors">Live Cockpit</a>
-            <a href="#features" className="hover:text-[var(--ink-primary)] transition-colors">Platform Features</a>
-            <a href="#calculator" className="hover:text-[var(--ink-primary)] transition-colors">Revenue Simulator</a>
-            <a href="#faq" className="hover:text-[var(--ink-primary)] transition-colors">FAQ</a>
+          {/* Clean Navigation Links */}
+          <nav className="hidden md:flex items-center gap-8 text-sm font-medium tracking-tight text-neutral-400">
+            <a href="#cockpit" className="hover:text-current transition-colors">Operations Suite</a>
+            <a href="#features" className="hover:text-current transition-colors">Architecture</a>
+            <a href="#simulator" className="hover:text-current transition-colors">Yield Calculator</a>
+            <a href="#faq" className="hover:text-current transition-colors">FAQ</a>
           </nav>
 
-          {/* Action Portals */}
+          {/* Action CTAs & Theme Toggle */}
           <div className="flex items-center gap-3">
             <button
-              onClick={onOpenRegister}
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-xs font-bold text-[var(--ink-primary)] hover:border-[var(--crimson)] transition-all shadow-sm"
+              onClick={toggleTheme}
+              className={`p-2 rounded-full border transition-colors ${
+                isGaming ? 'border-white/10 text-amber-400 hover:bg-white/5' : 'border-black/5 text-neutral-700 hover:bg-black/5'
+              }`}
+              title={isGaming ? 'Light mode' : 'Gaming mode'}
             >
-              <Store className="h-4 w-4 text-[var(--crimson)]" />
-              Register Cafe
+              {isGaming ? <Sun className="h-4 w-4" /> : <Flame className="h-4 w-4 text-[#D9184B]" />}
+            </button>
+
+            <button
+              onClick={onOpenRegister}
+              className={`hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold border transition-all ${
+                isGaming 
+                  ? 'border-white/10 hover:border-white/30 text-white bg-white/5' 
+                  : 'border-black/10 hover:border-black/30 text-black bg-black/5'
+              }`}
+            >
+              <Store className="h-3.5 w-3.5 text-[#D9184B]" />
+              <span>Register Lounge</span>
             </button>
 
             <button
               onClick={onOpenLogin}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[var(--crimson)] to-[#ff4d6d] text-white text-xs font-bold shadow-lg shadow-[var(--crimson)]/30 hover:shadow-xl hover:shadow-[var(--crimson)]/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#D9184B] hover:bg-[#b0103a] text-white text-xs font-bold shadow-lg shadow-[#D9184B]/25 hover:shadow-[#D9184B]/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               <span>Operator Login</span>
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
+
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative pt-16 pb-24 md:pt-24 md:pb-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Hero Section: Editorial Luxury Aesthetic */}
+      <section className="relative pt-24 pb-20 md:pt-36 md:pb-28 overflow-hidden">
+        
+        {/* Subtle Ambient Radial Lighting */}
+        <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[850px] h-[550px] bg-gradient-to-b from-[#D9184B]/15 via-[#D9184B]/5 to-transparent blur-[140px] rounded-full" />
+        
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 text-center relative z-10">
           
-          <div className="text-center max-w-4xl mx-auto">
-            
-            {/* Super Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)]/80 backdrop-blur shadow-sm mb-6 animate-pulse">
-              <span className="w-2 h-2 rounded-full bg-[var(--crimson)] animate-ping" />
-              <span className="text-xs font-mono font-bold tracking-wide text-[var(--crimson)] uppercase">
-                Welcome to VORA
-              </span>
-              <span className="text-xs text-[var(--ink-secondary)]">&bull; Next-Gen Station Management</span>
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] text-[var(--ink-primary)]">
-              The Command Center for <br className="hidden sm:inline"/>
-              <span className="bg-gradient-to-r from-[var(--crimson)] via-[#ff5b79] to-amber-500 bg-clip-text text-transparent">
-                Elite Gaming Lounges
-              </span>
-            </h1>
-
-            {/* Subtitle */}
-            <p className="mt-6 text-base sm:text-xl text-[var(--ink-secondary)] max-w-2xl mx-auto leading-relaxed">
-              Orchestrate PlayStation 5 pods, precision racing simulator rigs, snacks inventory, and real-time per-second billing with zero drift and verified cafe security.
-            </p>
-
-            {/* Primary Action Buttons */}
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <button
-                onClick={onOpenLogin}
-                className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[var(--crimson)] to-[#ff4d6d] text-white font-bold text-sm shadow-xl shadow-[var(--crimson)]/35 hover:shadow-2xl hover:shadow-[var(--crimson)]/50 hover:scale-[1.03] active:scale-[0.98] transition-all flex items-center gap-3 group"
-              >
-                <span>Launch VORA Console</span>
-                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-
-              <button
-                onClick={onOpenRegister}
-                className="px-8 py-4 rounded-2xl border-2 border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:border-[var(--crimson)] text-[var(--ink-primary)] font-bold text-sm shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2.5"
-              >
-                <Store className="h-5 w-5 text-[var(--crimson)]" />
-                <span>Onboard Your Gaming Center</span>
-              </button>
-            </div>
-
-            {/* Quick Metrics Strip */}
-            <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto text-left">
-              {[
-                { label: 'Clock Drift', val: '0.00s', sub: 'High-Precision Sync' },
-                { label: 'Live Telemetry', val: '60 fps', sub: 'Instant Pod State' },
-                { label: 'Security', val: 'Isolated', sub: 'Multi-Tenant Auth' },
-                { label: 'Architecture', val: 'Dual-Mode', sub: 'Daylight & Gaming' }
-              ].map((m, i) => (
-                <div key={i} className="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)]/60 backdrop-blur">
-                  <div className="text-xs text-[var(--ink-secondary)] font-mono">{m.label}</div>
-                  <div className="text-lg font-bold text-[var(--crimson)] mt-0.5">{m.val}</div>
-                  <div className="text-[10px] text-[var(--ink-secondary)]">{m.sub}</div>
-                </div>
-              ))}
-            </div>
-
+          {/* Status Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-md mb-8">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-mono font-medium tracking-wide opacity-80 uppercase">
+              Next-Gen Operating System &bull; Version 2.0
+            </span>
           </div>
 
-          {/* Interactive 3D Perspective Hero Cockpit Preview */}
-          <div 
-            id="cockpit" 
-            className="mt-16 sm:mt-24 max-w-6xl mx-auto perspective-1000"
-            style={{ perspective: '1200px' }}
-          >
-            <div 
-              style={{
-                transform: `rotateY(${mousePos.x * 0.4}deg) rotateX(${mousePos.y * 0.4}deg)`,
-                transition: 'transform 0.15s ease-out'
-              }}
-              className="rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] shadow-2xl overflow-hidden ring-1 ring-white/10"
+          {/* Main Headline */}
+          <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight leading-[1.02]">
+            Precision Engineering for <br className="hidden sm:inline" />
+            <span className="bg-gradient-to-r from-[#D9184B] via-[#ff5b79] to-amber-400 bg-clip-text text-transparent">
+              Modern Gaming Lounges
+            </span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="mt-8 text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto font-normal leading-relaxed tracking-tight">
+            Orchestrate PlayStation 5 pods, motion simulator rigs, cafe stock, and sub-second live billing in one cohesive cloud ecosystem.
+          </p>
+
+          {/* CTA Group */}
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
+            <button
+              onClick={onOpenLogin}
+              className="px-8 py-4 rounded-full bg-[#D9184B] hover:bg-[#b0103a] text-white font-bold text-sm shadow-xl shadow-[#D9184B]/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3"
             >
+              <span>Launch Operator Console</span>
+              <ArrowRight className="h-4 w-4" />
+            </button>
+
+            <button
+              onClick={onOpenRegister}
+              className={`px-8 py-4 rounded-full font-bold text-sm border backdrop-blur-lg hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 ${
+                isGaming 
+                  ? 'border-white/10 hover:border-white/30 text-white bg-white/[0.03]' 
+                  : 'border-black/10 hover:border-black/30 text-black bg-black/[0.03]'
+              }`}
+            >
+              <Store className="h-4 w-4 text-[#D9184B]" />
+              <span>Onboard Your Lounge</span>
+            </button>
+          </div>
+
+          {/* Key Metric Pills */}
+          <div className="mt-16 pt-8 border-t border-white/5 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div>
+              <div className="text-3xl font-display font-extrabold tracking-tight">0.00s</div>
+              <div className="text-xs text-neutral-400 mt-1 uppercase font-mono tracking-wider">Clock Telemetry Drift</div>
+            </div>
+            <div>
+              <div className="text-3xl font-display font-extrabold tracking-tight">100%</div>
+              <div className="text-xs text-neutral-400 mt-1 uppercase font-mono tracking-wider">Isolated Multi-Tenant</div>
+            </div>
+            <div>
+              <div className="text-3xl font-display font-extrabold tracking-tight">Instant</div>
+              <div className="text-xs text-neutral-400 mt-1 uppercase font-mono tracking-wider">Snacks &amp; Bar Sync</div>
+            </div>
+            <div>
+              <div className="text-3xl font-display font-extrabold tracking-tight">Dual-OS</div>
+              <div className="text-xs text-neutral-400 mt-1 uppercase font-mono tracking-wider">Day &amp; Night Modes</div>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* High-End Glassmorphic Live Cockpit Mockup */}
+      <section id="cockpit" className="py-20 relative">
+        <div className="max-w-6xl mx-auto px-6 lg:px-12">
+          
+          <div className={`rounded-3xl border shadow-2xl overflow-hidden backdrop-blur-2xl transition-all ${
+            isGaming 
+              ? 'bg-[#121217]/90 border-white/10 shadow-black/80' 
+              : 'bg-white/90 border-black/10 shadow-slate-200'
+          }`}>
+            
+            {/* Window Topbar */}
+            <div className={`px-6 py-4 border-b flex items-center justify-between text-xs font-mono ${
+              isGaming ? 'border-white/5 bg-black/30 text-neutral-400' : 'border-black/5 bg-neutral-100 text-neutral-600'
+            }`}>
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block" />
+                <span className="w-3 h-3 rounded-full bg-amber-500/80 inline-block" />
+                <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block" />
+                <span className="ml-3 font-semibold text-current opacity-70">
+                  vora-ops-cluster://node-01.telemetry
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-emerald-500 font-bold">LIVE TELEMETRY STREAM</span>
+              </div>
+            </div>
+
+            {/* Dashboard Workspace */}
+            <div className="p-8 sm:p-12">
               
-              {/* Cockpit Window Bar */}
-              <div className="px-6 py-4 border-b border-[var(--border-subtle)] bg-[var(--bg-canvas)]/60 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block" />
-                    <span className="w-3 h-3 rounded-full bg-amber-500/80 inline-block" />
-                    <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block" />
-                  </div>
-                  <span className="text-xs font-mono text-[var(--ink-secondary)] pl-2">
-                    vora-telemetry-cluster://active-session-hub
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-                    SIMULATED LIVE REVENUE: ₹14,820
-                  </span>
-                </div>
+              {/* Category Filter Pills */}
+              <div className="flex items-center gap-3 mb-8">
+                <button
+                  onClick={() => setActiveTab('stations')}
+                  className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all flex items-center gap-2 ${
+                    activeTab === 'stations'
+                      ? 'bg-[#D9184B] text-white shadow-lg shadow-[#D9184B]/30'
+                      : isGaming 
+                        ? 'border border-white/10 text-neutral-400 hover:text-white' 
+                        : 'border border-black/10 text-neutral-600 hover:text-black'
+                  }`}
+                >
+                  <Gamepad2 className="h-4 w-4" />
+                  <span>PlayStation 5 Consoles (4 Active)</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('simulators')}
+                  className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all flex items-center gap-2 ${
+                    activeTab === 'simulators'
+                      ? 'bg-[#D9184B] text-white shadow-lg shadow-[#D9184B]/30'
+                      : isGaming 
+                        ? 'border border-white/10 text-neutral-400 hover:text-white' 
+                        : 'border border-black/10 text-neutral-600 hover:text-black'
+                  }`}
+                >
+                  <Car className="h-4 w-4" />
+                  <span>Motion Rigs &amp; Simulators (2 Active)</span>
+                </button>
               </div>
 
-              {/* Cockpit Interior */}
-              <div className="p-6 sm:p-8 bg-gradient-to-b from-transparent to-[var(--bg-canvas)]/40">
+              {/* Station Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                {/* Station Tabs */}
-                <div className="flex items-center gap-3 pb-6 border-b border-[var(--border-subtle)]">
-                  <button
-                    onClick={() => setActiveTab('stations')}
-                    className={cx(
-                      'px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2',
-                      activeTab === 'stations' 
-                        ? 'bg-[var(--crimson)] text-white shadow-md shadow-[var(--crimson)]/30' 
-                        : 'border border-[var(--border-subtle)] text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]'
-                    )}
-                  >
-                    <Gamepad2 className="h-4 w-4" />
-                    PlayStation 5 Pods (4 Active)
-                  </button>
+                {/* Active Station Card 1 */}
+                <div className={`p-6 rounded-2xl border transition-all ${
+                  isGaming ? 'bg-white/[0.03] border-white/10 hover:border-[#D9184B]/50' : 'bg-neutral-50 border-black/5 hover:border-[#D9184B]/50'
+                }`}>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#D9184B]">
+                        Pod 01 &bull; PlayStation 5
+                      </span>
+                      <h4 className="font-bold text-lg mt-0.5">Tekken 8 Tournament</h4>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                      IN PLAY
+                    </span>
+                  </div>
 
-                  <button
-                    onClick={() => setActiveTab('simulators')}
-                    className={cx(
-                      'px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2',
-                      activeTab === 'simulators' 
-                        ? 'bg-[var(--crimson)] text-white shadow-md shadow-[var(--crimson)]/30' 
-                        : 'border border-[var(--border-subtle)] text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]'
-                    )}
-                  >
-                    <Car className="h-4 w-4" />
-                    Motion Rigs & Simulators (2 Active)
-                  </button>
+                  <div className="mt-6 space-y-3">
+                    <div className="flex justify-between text-xs text-neutral-400">
+                      <span>Elapsed Match Time</span>
+                      <span className="font-mono font-bold text-current">{formatTimer(matchSeconds)}</span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
+                      <div className="bg-gradient-to-r from-[#D9184B] to-amber-500 h-full w-[65%] animate-pulse" />
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-5 border-t border-neutral-200 dark:border-white/5 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] uppercase text-neutral-400 block font-mono">Live Session Total</span>
+                      <span className="text-xl font-display font-black">₹420.00</span>
+                    </div>
+                    <span className="text-xs font-mono text-neutral-400">2 Controllers</span>
+                  </div>
                 </div>
 
-                {/* Simulated Pod Grid */}
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-5">
-                  
-                  {/* Pod 1 */}
-                  <div className="p-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)]/80 relative overflow-hidden group hover:border-[var(--crimson)]/50 transition-all">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold text-[var(--crimson)]">POD #01</span>
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
-                            IN SESSION
-                          </span>
-                        </div>
-                        <h4 className="font-bold text-base mt-1 text-[var(--ink-primary)]">Tekken 8 Tournament</h4>
-                      </div>
-                      <Gamepad2 className="h-6 w-6 text-[var(--crimson)] group-hover:rotate-12 transition-transform" />
-                    </div>
-
-                    <div className="mt-5 space-y-2.5">
-                      <div className="flex justify-between text-xs text-[var(--ink-secondary)] font-mono">
-                        <span>Elapsed: <strong className="text-[var(--ink-primary)]">01:42:18</strong></span>
-                        <span>Players: <strong className="text-[var(--ink-primary)]">2 Players</strong></span>
-                      </div>
-                      <div className="w-full bg-slate-200 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
-                        <div className="bg-gradient-to-r from-[var(--crimson)] to-amber-500 h-full w-[72%] animate-pulse" />
-                      </div>
-                    </div>
-
-                    <div className="mt-5 pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] text-[var(--ink-secondary)] uppercase">Live Ticking Bill</span>
-                        <div className="text-lg font-mono font-bold text-[var(--ink-primary)]">₹510.00</div>
-                      </div>
-                      <span className="text-xs text-emerald-500 font-mono font-semibold">Ticking Live</span>
-                    </div>
-                  </div>
-
-                  {/* Pod 2 */}
-                  <div className="p-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)]/80 relative overflow-hidden group hover:border-[var(--crimson)]/50 transition-all">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold text-[var(--crimson)]">POD #02</span>
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
-                            IN SESSION
-                          </span>
-                        </div>
-                        <h4 className="font-bold text-base mt-1 text-[var(--ink-primary)]">FC 24 Premier Derby</h4>
-                      </div>
-                      <Gamepad2 className="h-6 w-6 text-[var(--crimson)] group-hover:rotate-12 transition-transform" />
-                    </div>
-
-                    <div className="mt-5 space-y-2.5">
-                      <div className="flex justify-between text-xs text-[var(--ink-secondary)] font-mono">
-                        <span>Elapsed: <strong className="text-[var(--ink-primary)]">00:48:30</strong></span>
-                        <span>Players: <strong className="text-[var(--ink-primary)]">4 Players</strong></span>
-                      </div>
-                      <div className="w-full bg-slate-200 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
-                        <div className="bg-gradient-to-r from-cyan-500 to-blue-500 h-full w-[45%]" />
-                      </div>
-                    </div>
-
-                    <div className="mt-5 pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] text-[var(--ink-secondary)] uppercase">Live Ticking Bill</span>
-                        <div className="text-lg font-mono font-bold text-[var(--ink-primary)]">₹480.00</div>
-                      </div>
-                      <span className="text-xs text-emerald-500 font-mono font-semibold">+ 2 Monster Drinks</span>
-                    </div>
-                  </div>
-
-                  {/* Rig 1 */}
-                  <div className="p-5 rounded-2xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-canvas)]/40 relative overflow-hidden flex flex-col justify-between">
+                {/* Active Station Card 2 */}
+                <div className={`p-6 rounded-2xl border transition-all ${
+                  isGaming ? 'bg-white/[0.03] border-white/10 hover:border-[#D9184B]/50' : 'bg-neutral-50 border-black/5 hover:border-[#D9184B]/50'
+                }`}>
+                  <div className="flex items-start justify-between">
                     <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono font-bold text-emerald-500">RIG #01</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-500/10 text-[var(--ink-secondary)] font-bold">
-                          READY TO LAUNCH
-                        </span>
-                      </div>
-                      <h4 className="font-bold text-base mt-1 text-[var(--ink-primary)]">Assetto Corsa Pro Rig</h4>
-                      <p className="text-xs text-[var(--ink-secondary)] mt-2">
-                        Fanatec direct drive wheel, load-cell triple pedals & 49" ultrawide curved cockpit.
-                      </p>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#D9184B]">
+                        Pod 02 &bull; PlayStation 5
+                      </span>
+                      <h4 className="font-bold text-lg mt-0.5">FC 24 Premier Derby</h4>
                     </div>
-
-                    <button 
-                      onClick={onOpenLogin}
-                      className="mt-6 w-full py-2.5 rounded-xl border border-[var(--crimson)]/30 text-[var(--crimson)] font-bold text-xs hover:bg-[var(--crimson)] hover:text-white transition-all flex items-center justify-center gap-2"
-                    >
-                      <span>Launch In Operator App</span>
-                      <ChevronRight className="h-4 w-4" />
-                    </button>
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                      IN PLAY
+                    </span>
                   </div>
 
+                  <div className="mt-6 space-y-3">
+                    <div className="flex justify-between text-xs text-neutral-400">
+                      <span>Elapsed Match Time</span>
+                      <span className="font-mono font-bold text-current">00:46:12</span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
+                      <div className="bg-gradient-to-r from-cyan-500 to-blue-500 h-full w-[40%]" />
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-5 border-t border-neutral-200 dark:border-white/5 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] uppercase text-neutral-400 block font-mono">Live Session Total</span>
+                      <span className="text-xl font-display font-black">₹390.00</span>
+                    </div>
+                    <span className="text-xs font-mono text-emerald-500">+ 2 Monster Drinks</span>
+                  </div>
+                </div>
+
+                {/* Available Simulator Rig Card */}
+                <div className={`p-6 rounded-2xl border border-dashed flex flex-col justify-between transition-all ${
+                  isGaming ? 'bg-white/[0.01] border-white/15' : 'bg-white border-black/10'
+                }`}>
+                  <div>
+                    <div className="flex items-start justify-between">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-500">
+                        Rig 01 &bull; Direct Drive Sim
+                      </span>
+                      <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-neutral-200 dark:bg-white/10 text-neutral-400">
+                        STANDBY
+                      </span>
+                    </div>
+                    <h4 className="font-bold text-lg mt-1">Assetto Corsa Racing Cockpit</h4>
+                    <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
+                      Fanatec DD1 force feedback, load-cell pedals &amp; 49-inch ultrawide 240Hz display.
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={onOpenLogin}
+                    className="mt-6 w-full py-3 rounded-xl border border-[#D9184B]/30 hover:bg-[#D9184B] hover:text-white text-[#D9184B] text-xs font-bold transition-all flex items-center justify-center gap-2"
+                  >
+                    <span>Launch in Operator App</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </button>
                 </div>
 
               </div>
 
             </div>
+
           </div>
 
         </div>
       </section>
 
-      {/* Feature Showcase Grid */}
-      <section id="features" className="py-20 md:py-32 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)]/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Feature Pillars: Clean Bento-Grid Layout */}
+      <section id="features" className="py-24 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
           
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-mono font-bold tracking-widest text-[var(--crimson)] uppercase">
-              Operational Precision
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <span className="text-xs font-mono uppercase tracking-widest text-[#D9184B] font-bold">
+              Core Architecture
             </span>
-            <h2 className="font-display text-3xl sm:text-5xl font-extrabold text-[var(--ink-primary)] mt-3">
-              Built Specifically for the Realities of Gaming Arenas
+            <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tight mt-3">
+              Designed for the Demands of High-Traffic Lounges
             </h2>
-            <p className="text-base text-[var(--ink-secondary)] mt-4">
-              Eliminate revenue leakage from unmonitored consoles, manual receipt disputes, and unbilled overtime.
+            <p className="text-base text-neutral-400 mt-4 leading-relaxed">
+              Every detail engineered to prevent revenue leaks, streamline walk-in seating, and protect lounge margins.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            {/* Card 1 */}
-            <div className="p-8 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:border-[var(--crimson)]/50 transition-all shadow-sm">
-              <div className="w-12 h-12 rounded-2xl bg-[var(--crimson)]/10 text-[var(--crimson)] flex items-center justify-center mb-6 border border-[var(--crimson)]/20">
+            {/* Bento 1 */}
+            <div className={`p-8 rounded-3xl border transition-all ${
+              isGaming ? 'bg-[#121217]/70 border-white/5 hover:border-white/20' : 'bg-white border-black/5 hover:border-black/20 shadow-sm'
+            }`}>
+              <div className="w-12 h-12 rounded-2xl bg-[#D9184B]/10 text-[#D9184B] flex items-center justify-center mb-6">
                 <Clock className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold text-[var(--ink-primary)]">Zero-Drift Telemetry</h3>
-              <p className="text-sm text-[var(--ink-secondary)] mt-3 leading-relaxed">
-                Calculates session duration down to the exact second against persistent timestamp anchors, guaranteeing accuracy even if the browser refreshes or loses connectivity.
+              <h3 className="text-xl font-bold font-display">Zero-Drift Telemetry</h3>
+              <p className="text-sm text-neutral-400 mt-3 leading-relaxed">
+                Calculates session duration down to the exact millisecond against persistent cloud anchors. Page reloads, device switches, or WiFi dropouts never lose a second of billable time.
               </p>
-              <ul className="mt-6 space-y-2 text-xs font-medium text-[var(--ink-secondary)]">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Auto Grace-Period Cushioning
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Multi-Controller Extra Head Fees
-                </li>
-              </ul>
             </div>
 
-            {/* Card 2 */}
-            <div className="p-8 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:border-[var(--crimson)]/50 transition-all shadow-sm">
-              <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center mb-6 border border-cyan-500/20">
+            {/* Bento 2 */}
+            <div className={`p-8 rounded-3xl border transition-all ${
+              isGaming ? 'bg-[#121217]/70 border-white/5 hover:border-white/20' : 'bg-white border-black/5 hover:border-black/20 shadow-sm'
+            }`}>
+              <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center mb-6">
                 <Coffee className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold text-[var(--ink-primary)]">Instant Snacks & Bar Add-ons</h3>
-              <p className="text-sm text-[var(--ink-secondary)] mt-3 leading-relaxed">
-                Add Monster energy drinks, Doritos, and instant noodles to ongoing pod sessions with one tap. Consolidate into a single clear itemized settlement.
+              <h3 className="text-xl font-bold font-display">Snacks &amp; Cafe Add-Ons</h3>
+              <p className="text-sm text-neutral-400 mt-3 leading-relaxed">
+                Add cold brew cans, ramen bowls, and energy drinks directly to ongoing pod accounts. Automatically generates a consolidated, itemized receipt at checkout.
               </p>
-              <ul className="mt-6 space-y-2 text-xs font-medium text-[var(--ink-secondary)]">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500" /> One-Tap Cart Integration
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Live Inventory Stock Alerts
-                </li>
-              </ul>
             </div>
 
-            {/* Card 3 */}
-            <div className="p-8 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:border-[var(--crimson)]/50 transition-all shadow-sm">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-6 border border-amber-500/20">
+            {/* Bento 3 */}
+            <div className={`p-8 rounded-3xl border transition-all ${
+              isGaming ? 'bg-[#121217]/70 border-white/5 hover:border-white/20' : 'bg-white border-black/5 hover:border-black/20 shadow-sm'
+            }`}>
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-6">
                 <ShieldCheck className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold text-[var(--ink-primary)]">Enterprise Isolation</h3>
-              <p className="text-sm text-[var(--ink-secondary)] mt-3 leading-relaxed">
-                Super-Admin verified onboarding protects your revenue data. Every lounge gets dedicated station pods, staff rosters, and audit trails.
+              <h3 className="text-xl font-bold font-display">Super Admin Onboarding</h3>
+              <p className="text-sm text-neutral-400 mt-3 leading-relaxed">
+                Each lounge operates inside an isolated, encrypted domain. Super Admin vetting verifies new cafe registrations and issues credentials securely via automated Gmail dispatch.
               </p>
-              <ul className="mt-6 space-y-2 text-xs font-medium text-[var(--ink-secondary)]">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Multi-Tenant Row Level Security
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Staff Passwords & Roles
-                </li>
-              </ul>
             </div>
 
           </div>
@@ -708,111 +446,118 @@ export default function LandingPage({ onOpenLogin, onOpenRegister }) {
         </div>
       </section>
 
-      {/* Interactive Revenue Calculator */}
-      <section id="calculator" className="py-20 md:py-32">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Interactive Yield & Revenue Calculator */}
+      <section id="simulator" className="py-24 border-t border-white/5">
+        <div className="max-w-5xl mx-auto px-6 lg:px-12">
           
-          <div className="p-8 sm:p-12 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-[var(--crimson)]/10 blur-[90px] rounded-full pointer-events-none" />
-
-            <div className="text-center max-w-2xl mx-auto">
-              <span className="text-xs font-mono font-bold tracking-widest text-[var(--crimson)] uppercase">
-                Interactive Telemetry Simulator
+          <div className={`p-8 sm:p-14 rounded-3xl border shadow-2xl relative overflow-hidden backdrop-blur-2xl ${
+            isGaming ? 'bg-[#121217]/80 border-white/10' : 'bg-white border-black/10'
+          }`}>
+            
+            <div className="text-center max-w-xl mx-auto mb-12">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#D9184B] font-bold">
+                Lounge Yield Modeling
               </span>
-              <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-[var(--ink-primary)] mt-2">
-                Simulate Station Billing Dynamics
+              <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight mt-2">
+                Simulate Your Arena Revenue
               </h2>
-              <p className="text-sm text-[var(--ink-secondary)] mt-2">
-                Test how VORA calculates tiered controller rates and duration billing in real time.
+              <p className="text-sm text-neutral-400 mt-2">
+                Adjust station volume, average daily utilization, and cafe upsells to project monthly yield.
               </p>
             </div>
 
-            <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
               
               {/* Sliders */}
               <div className="space-y-6">
                 <div>
-                  <div className="flex justify-between text-sm font-semibold mb-2">
-                    <span>Session Duration</span>
-                    <span className="text-[var(--crimson)] font-mono font-bold">{calcMinutes} Minutes</span>
+                  <div className="flex justify-between text-xs font-semibold mb-2">
+                    <span className="text-neutral-400">Active Stations &amp; Rigs</span>
+                    <span className="font-mono font-bold text-[#D9184B]">{simStations} Units</span>
                   </div>
-                  <input 
-                    type="range" 
-                    min="15" 
-                    max="240" 
-                    step="15"
-                    value={calcMinutes}
-                    onChange={(e) => setCalcMinutes(Number(e.target.value))}
-                    className="w-full accent-[var(--crimson)] cursor-pointer"
-                  />
-                  <div className="flex justify-between text-[10px] text-[var(--ink-secondary)] font-mono mt-1">
-                    <span>15m Quick Match</span>
-                    <span>1 Hour</span>
-                    <span>4 Hours Marathon</span>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-sm font-semibold mb-2">
-                    <span>Active Players / Controllers</span>
-                    <span className="text-[var(--crimson)] font-mono font-bold">{calcPlayers} Players</span>
-                  </div>
-                  <input 
-                    type="range" 
-                    min="1" 
-                    max="4" 
+                  <input
+                    type="range"
+                    min="4"
+                    max="30"
                     step="1"
-                    value={calcPlayers}
-                    onChange={(e) => setCalcPlayers(Number(e.target.value))}
-                    className="w-full accent-[var(--crimson)] cursor-pointer"
+                    value={simStations}
+                    onChange={(e) => setSimStations(Number(e.target.value))}
+                    className="w-full accent-[#D9184B] cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-[var(--ink-secondary)] font-mono mt-1">
-                    <span>1 Solo</span>
-                    <span>2 Versus</span>
-                    <span>3 Squad</span>
-                    <span>4 Party</span>
-                  </div>
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-sm font-semibold mb-2">
-                    <span>Base Hourly Rate per Head</span>
-                    <span className="text-[var(--crimson)] font-mono font-bold">₹{calcRatePerHr}/hr</span>
+                  <div className="flex justify-between text-xs font-semibold mb-2">
+                    <span className="text-neutral-400">Daily Utilization per Rig</span>
+                    <span className="font-mono font-bold text-[#D9184B]">{simHours} Hours/Day</span>
                   </div>
-                  <input 
-                    type="range" 
-                    min="100" 
-                    max="500" 
-                    step="50"
-                    value={calcRatePerHr}
-                    onChange={(e) => setCalcRatePerHr(Number(e.target.value))}
-                    className="w-full accent-[var(--crimson)] cursor-pointer"
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    step="1"
+                    value={simHours}
+                    onChange={(e) => setSimHours(Number(e.target.value))}
+                    className="w-full accent-[#D9184B] cursor-pointer"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs font-semibold mb-2">
+                    <span className="text-neutral-400">Base Hourly Rate</span>
+                    <span className="font-mono font-bold text-[#D9184B]">₹{simHourlyRate}/hr</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="100"
+                    max="400"
+                    step="20"
+                    value={simHourlyRate}
+                    onChange={(e) => setSimHourlyRate(Number(e.target.value))}
+                    className="w-full accent-[#D9184B] cursor-pointer"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs font-semibold mb-2">
+                    <span className="text-neutral-400">Average Snacks / Drink Order per Seat</span>
+                    <span className="font-mono font-bold text-[#D9184B]">₹{simSnacksAvg}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="200"
+                    step="10"
+                    value={simSnacksAvg}
+                    onChange={(e) => setSimSnacksAvg(Number(e.target.value))}
+                    className="w-full accent-[#D9184B] cursor-pointer"
                   />
                 </div>
               </div>
 
-              {/* Calculated Result Display Card */}
-              <div className="p-8 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-center relative overflow-hidden">
-                <div className="text-xs font-mono uppercase text-[var(--ink-secondary)] tracking-wider">
-                  Computed Session Total
-                </div>
-                
-                <div className="text-5xl font-display font-black text-[var(--crimson)] mt-3">
-                  ₹{calcTotal}
+              {/* Display Result Box */}
+              <div className={`p-8 rounded-2xl border text-center ${
+                isGaming ? 'bg-black/40 border-white/10' : 'bg-neutral-50 border-black/5'
+              }`}>
+                <span className="text-xs font-mono uppercase tracking-wider text-neutral-400">
+                  Projected 30-Day Gross Arena Yield
+                </span>
+
+                <div className="text-5xl font-display font-black text-[#D9184B] mt-4">
+                  ₹{monthlyProjected.toLocaleString('en-IN')}
                 </div>
 
-                <div className="mt-4 text-xs text-[var(--ink-secondary)] font-mono">
-                  {calcPlayers} player(s) &times; {(calcMinutes / 60).toFixed(1)} hr(s) &times; ₹{calcRatePerHr}/hr
+                <div className="mt-4 text-xs font-mono text-neutral-400 space-y-1">
+                  <div>Rig Gaming Revenue: ₹{(dailyGameRevenue * 30).toLocaleString('en-IN')}</div>
+                  <div>Snacks &amp; Cafe Bar: ₹{(dailySnacksRevenue * 30).toLocaleString('en-IN')}</div>
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-[var(--border-subtle)] flex items-center justify-center gap-3">
-                  <button
-                    onClick={onOpenLogin}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-[var(--crimson)] to-[#ff4d6d] text-white font-bold text-xs shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all"
-                  >
-                    Open Live Counter
-                  </button>
-                </div>
+                <button
+                  onClick={onOpenRegister}
+                  className="mt-8 w-full py-3.5 rounded-full bg-[#D9184B] hover:bg-[#b0103a] text-white text-xs font-bold tracking-wide shadow-lg shadow-[#D9184B]/20 transition-all cursor-pointer"
+                >
+                  Onboard Your Arena Today &rarr;
+                </button>
               </div>
 
             </div>
@@ -823,51 +568,53 @@ export default function LandingPage({ onOpenLogin, onOpenRegister }) {
       </section>
 
       {/* FAQ Accordion */}
-      <section id="faq" className="py-20 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)]/30">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="faq" className="py-24 border-t border-white/5">
+        <div className="max-w-4xl mx-auto px-6 lg:px-12">
           
-          <div className="text-center mb-12">
-            <span className="text-xs font-mono font-bold tracking-widest text-[var(--crimson)] uppercase">
-              Common Questions
-            </span>
-            <h2 className="font-display text-3xl font-extrabold text-[var(--ink-primary)] mt-2">
+          <div className="text-center mb-16">
+            <span className="text-xs font-mono uppercase tracking-widest text-[#D9184B] font-bold">
               Frequently Asked Questions
+            </span>
+            <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight mt-2">
+              Everything You Need to Know About VORA
             </h2>
           </div>
 
           <div className="space-y-4">
             {[
               {
-                q: "How does VORA prevent operator revenue loss?",
-                a: "Traditional timers rely on wall clocks or paper receipts. VORA records high-resolution start timestamps in the cloud. If an operator walks away, the meter keeps running with zero drift. Extra controllers and snacks bar items are locked into the session total."
+                q: "What makes VORA different from generic cafe timers?",
+                a: "Generic cafe timers use local browser timers that drift or reset when computers reboot. VORA syncs every session second against an encrypted cloud clock. Furthermore, VORA natively integrates per-controller tier billing and instant snacks bar settlements."
               },
               {
-                q: "Can I manage both PS5 pods and racing simulator rigs?",
-                a: "Yes! VORA features dedicated modules for PlayStation 5 pods and specialized racing simulator rigs (Fanatec, Logitech, Moza), with custom per-minute pricing models for each zone."
+                q: "Can I manage multiple racing rigs with custom pedals alongside PS5 consoles?",
+                a: "Yes! VORA provides dedicated category lanes for both PlayStation 5 pods and specialized racing simulator rigs, each with their own customizable hourly rates and multi-player fees."
               },
               {
                 q: "How does onboarding work for a new lounge?",
-                a: "Click 'Register Cafe' in the navigation bar. Fill out your lounge details and city. Our Super-Admin security team verifies your lounge, activates your account, and sends your official login credentials via email."
+                a: "Click 'Register Lounge' at the top of the page. Once submitted, our Super Admin team conducts security verification and delivers your administrator credentials via email."
               },
               {
-                q: "Does VORA work smoothly on tablets and mobile phones?",
-                a: "VORA is 100% responsive. Staff can carry an iPad or smartphone around the floor, start sessions right at the couch, and order snacks on the fly."
+                q: "Can staff run the software on tablets or mobile phones?",
+                a: "Yes. VORA is completely responsive and fluid. Staff can walk the lounge floor with an iPad, launch sessions directly at the couch, and append cafe orders on the fly."
               }
-            ].map((faq, i) => (
-              <div 
-                key={i} 
-                className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] overflow-hidden transition-all"
+            ].map((item, idx) => (
+              <div
+                key={idx}
+                className={`rounded-2xl border transition-all overflow-hidden ${
+                  isGaming ? 'bg-[#121217]/50 border-white/5' : 'bg-white border-black/5 shadow-sm'
+                }`}
               >
                 <button
-                  onClick={() => setFaqOpen(faqOpen === i ? null : i)}
-                  className="w-full p-5 text-left font-bold text-base text-[var(--ink-primary)] flex items-center justify-between gap-4"
+                  onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
+                  className="w-full p-6 text-left font-bold text-base flex items-center justify-between gap-4 cursor-pointer"
                 >
-                  <span>{faq.q}</span>
-                  <ChevronDown className={cx("h-5 w-5 text-[var(--ink-secondary)] transition-transform duration-200", faqOpen === i && "rotate-180 text-[var(--crimson)]")} />
+                  <span>{item.q}</span>
+                  <ChevronDown className={`h-5 w-5 text-neutral-400 transition-transform ${activeFaq === idx ? 'rotate-180 text-[#D9184B]' : ''}`} />
                 </button>
-                {faqOpen === i && (
-                  <div className="px-5 pb-5 text-sm text-[var(--ink-secondary)] leading-relaxed border-t border-[var(--border-subtle)] pt-4">
-                    {faq.a}
+                {activeFaq === idx && (
+                  <div className="px-6 pb-6 text-sm text-neutral-400 leading-relaxed border-t border-white/5 pt-4">
+                    {item.a}
                   </div>
                 )}
               </div>
@@ -877,27 +624,25 @@ export default function LandingPage({ onOpenLogin, onOpenRegister }) {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-[var(--border-subtle)] bg-[var(--bg-canvas)] py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      {/* Minimalist Luxury Footer */}
+      <footer className="py-12 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-neutral-400">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-[var(--crimson)] p-1.5 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-[#D9184B] p-1.5 flex items-center justify-center">
               <img src={VORA_LOGO} alt="VORA" className="w-full h-full object-contain" />
             </div>
-            <span className="font-display font-black text-lg tracking-wider text-[var(--ink-primary)]">VORA OS</span>
-            <span className="text-xs text-[var(--ink-secondary)]">
-              &copy; {new Date().getFullYear()} VORA Technologies. All rights reserved.
-            </span>
+            <span className="font-display font-black text-base text-current">VORA OS</span>
+            <span>&copy; {new Date().getFullYear()} VORA Technologies Inc.</span>
           </div>
 
-          <div className="flex items-center gap-6 text-xs text-[var(--ink-secondary)]">
-            <button onClick={onOpenLogin} className="hover:text-[var(--crimson)] font-semibold transition-colors">
-              Staff Portal
+          <div className="flex items-center gap-6">
+            <button onClick={onOpenLogin} className="hover:text-current font-medium transition-colors">
+              Staff Sign In
             </button>
-            <button onClick={onOpenRegister} className="hover:text-[var(--crimson)] font-semibold transition-colors">
+            <button onClick={onOpenRegister} className="hover:text-current font-medium transition-colors">
               Register Lounge
             </button>
-            <a href="#cockpit" className="hover:text-[var(--crimson)] transition-colors">
+            <a href="#cockpit" className="hover:text-current font-medium transition-colors">
               Telemetry Status
             </a>
           </div>

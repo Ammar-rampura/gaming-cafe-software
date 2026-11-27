@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import { DataProvider } from './context/DataContext'
@@ -7,6 +7,7 @@ import { FlowProvider } from './components/Flows'
 import Layout from './components/Layout'
 import { Spinner } from './components/ui'
 import SplashScreen from './components/SplashScreen'
+import WelcomeScreen from './components/WelcomeScreen'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
@@ -18,19 +19,30 @@ import Settings from './pages/Settings'
 import SuperAdmin from './pages/SuperAdmin'
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(true)
+  // Check if user has already seen the welcome intro in this session
+  const [showSplash, setShowSplash] = useState(() => {
+    return !sessionStorage.getItem('vora_intro_seen')
+  })
+  const [showWelcome, setShowWelcome] = useState(false)
   const [authView, setAuthView] = useState(null) // null (shows Landing) | 'signin' | 'register_cafe'
   const { session, profile, loading, isAdmin, isSuperAdmin, signOut } = useAuth()
 
   const handleSplashFinish = () => {
     setShowSplash(false)
+    setShowWelcome(true)
+  }
+
+  const handleWelcomeFinish = () => {
+    setShowWelcome(false)
+    sessionStorage.setItem('vora_intro_seen', 'true')
   }
 
   return (
     <ThemeProvider>
       {showSplash && <SplashScreen onFinish={handleSplashFinish} />}
-      {!showSplash && (
-        <>
+      {!showSplash && showWelcome && <WelcomeScreen onFinish={handleWelcomeFinish} />}
+      {!showSplash && !showWelcome && (
+        <div className="animate-in fade-in duration-700">
           {loading ? (
             <Spinner />
           ) : !session ? (
@@ -69,7 +81,7 @@ export default function App() {
               </FlowProvider>
             </DataProvider>
           )}
-        </>
+        </div>
       )}
     </ThemeProvider>
   )

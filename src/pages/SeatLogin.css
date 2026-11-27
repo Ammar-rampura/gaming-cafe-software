@@ -19,8 +19,8 @@
   font-family: var(--sans);
   -webkit-tap-highlight-color: transparent;
   background: repeating-linear-gradient(90deg, rgba(115, 20, 45, .045) 0 2px, transparent 2px 46px),
-              radial-gradient(70% 55% at 50% 30%, #fff7fa, transparent 70%),
-              linear-gradient(180deg, #f9ecf0, #f2dce4);
+    radial-gradient(70% 55% at 50% 30%, #fff7fa, transparent 70%),
+    linear-gradient(180deg, #f9ecf0, #f2dce4);
 }
 
 .seat-login-root::before {
@@ -57,7 +57,10 @@
   background: #2a1b20;
   box-shadow: 0 14px 24px -12px rgba(42, 27, 32, .5);
   text-align: center;
-  animation: seat-fi .9s both;
+  z-index: 10;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .seat-neon b {
@@ -81,16 +84,41 @@
 }
 
 @keyframes seat-fk {
-  0%, 18%, 22%, 100% { opacity: 1; }
-  20% { opacity: .35; }
-  21% { opacity: .9; }
-  62% { opacity: 1; }
-  63% { opacity: .5; }
-  64% { opacity: 1; }
+
+  0%,
+  18%,
+  22%,
+  100% {
+    opacity: 1;
+  }
+
+  20% {
+    opacity: .35;
+  }
+
+  21% {
+    opacity: .9;
+  }
+
+  62% {
+    opacity: 1;
+  }
+
+  63% {
+    opacity: .5;
+  }
+
+  64% {
+    opacity: 1;
+  }
 }
 
 @keyframes seat-fi {
-  from { opacity: 0; transform: translate(-50%, -14px); }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -14px);
+  }
+  to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 .seat-mon {
@@ -103,11 +131,18 @@
   background: #232227;
   padding: 10px;
   box-shadow: 0 30px 40px -20px rgba(42, 27, 32, .55), inset 0 0 0 2px #3b3a41;
-  animation: seat-up .8s .1s cubic-bezier(.2, 1.1, .3, 1) both;
+  z-index: 10;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 @keyframes seat-up {
-  from { opacity: 0; transform: translateY(30px); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .seat-mon.shake {
@@ -115,10 +150,21 @@
 }
 
 @keyframes seat-sh {
-  20% { transform: translateX(-8px); }
-  40% { transform: translateX(7px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(3px); }
+  20% {
+    transform: translateX(-8px);
+  }
+
+  40% {
+    transform: translateX(7px);
+  }
+
+  60% {
+    transform: translateX(-4px);
+  }
+
+  80% {
+    transform: translateX(3px);
+  }
 }
 
 .seat-mon::after {
@@ -339,7 +385,9 @@
 }
 
 @keyframes seat-pu {
-  50% { transform: scale(1.08); }
+  50% {
+    transform: scale(1.08);
+  }
 }
 
 .seat-pb {
@@ -379,7 +427,9 @@
 }
 
 @keyframes seat-ckp {
-  from { transform: scale(0); }
+  from {
+    transform: scale(0);
+  }
 }
 
 .seat-v-ok h4 {
@@ -627,7 +677,9 @@
 }
 
 @keyframes seat-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .seat-hs {
